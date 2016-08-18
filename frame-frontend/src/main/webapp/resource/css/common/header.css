@@ -1,0 +1,15 @@
+@CHARSET "UTF-8";
+
+#upload-div {
+	position: relative;
+	top: -68px;
+	float:right
+}
+
+div#header {
+	margin-bottom: 20px;
+}
+
+#download {
+	cursor: pointer;
+}

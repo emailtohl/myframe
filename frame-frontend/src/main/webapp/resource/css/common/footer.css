@@ -1,0 +1,12 @@
+@CHARSET "UTF-8";
+
+textarea#chatmsg {
+	border: 0;
+	background-color: transparent;
+	/*scrollbar-arrow-color:yellow;  
+     scrollbar-base-color:lightsalmon;  
+     overflow: hidden;*/ 
+	color: #666464;
+	height: auto;
+	width:100%
+}

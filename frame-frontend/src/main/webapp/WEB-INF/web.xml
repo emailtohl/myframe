@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="3.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <session-config>
+    <session-timeout>30</session-timeout>
+    <cookie-config>
+      <http-only>true</http-only>
+      <max-age>1800</max-age>
+    </cookie-config>
+    <tracking-mode>COOKIE</tracking-mode>
+  </session-config>
+  
+  <jsp-config>
+    <jsp-property-group>
+      <url-pattern>*.jsp</url-pattern>
+      <url-pattern>*.jspf</url-pattern>
+      <page-encoding>UTF-8</page-encoding>
+      <scripting-invalid>true</scripting-invalid>
+      <include-prelude>/WEB-INF/jsp/base.jspf</include-prelude>
+      <trim-directive-whitespaces>true</trim-directive-whitespaces>
+      <default-content-type>text/html</default-content-type>
+    </jsp-property-group>
+    <jsp-property-group>
+      <url-pattern>/WEB-INF/jsp/common/page.jsp</url-pattern>
+      <scripting-invalid>false</scripting-invalid>
+    </jsp-property-group>
+  </jsp-config>
+  
+  <context-param>
+    <description>
+		这里配置ServletContext的上下文参数
+		ContextLoaderListener会读取参数名为contextConfigLocation中的内容
+	</description>
+    <param-name>DataSyncTimeDelayTime</param-name>
+    <param-value>1000000</param-value>
+  </context-param>
+</web-app>

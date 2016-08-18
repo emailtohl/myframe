@@ -1,0 +1,19 @@
+@CHARSET "UTF-8";
+
+#goods-list-page {
+	margin-bottom: 20px;
+}
+
+form#goods-query input, form#goods-add input, form#goods-edit input, textarea[name="description"] {
+	margin-bottom: 5px;
+	margin-top: 5px;
+} 
+
+.errormsg, .tip, .validate-font-color {
+	color: red;
+}
+
+.tip {
+	display:none;
+}
+
