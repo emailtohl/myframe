@@ -33,7 +33,7 @@ ${greeting}
 <script type="text/javascript" src="resource/lib/util.js"></script>
 <script type="text/javascript" src="resource/lib/context.js"></script>
 <script type="text/javascript" src="resource/scripts/common/main.js"></script>
-<script type="text/javascript" src="resource/lib/jquery/jquery-3.0.0.js"></script>
+<script type="text/javascript" src="resource/lib/jquery/jquery-3.1.0.js"></script>
 </head>
 <body>
 <div class="container-fluid">
