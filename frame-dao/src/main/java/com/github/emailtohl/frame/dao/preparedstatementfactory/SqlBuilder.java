@@ -12,7 +12,8 @@ import java.util.Map;
  * 此类为PreparedStatement服务，分析被Orm注解的po，创建出SQL语句和对应的参数
  * SELECT语句往往非常复杂，通常需手写SQL，但可通过本类的getSelectCondition()简化条件语句的拼写
  * 
- * @author helei 2015.07.22
+ * @author helei
+ * 2015.07.22
  *************************************************
  */
 public class SqlBuilder {

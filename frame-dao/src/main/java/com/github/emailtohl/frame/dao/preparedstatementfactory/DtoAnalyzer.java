@@ -8,7 +8,8 @@ import java.util.Map;
  *************************************************
  * 本类实现了OrmAnalyzer，将po对象中所有被Orm注解的信息解析到SqlAndArgs对象中
  * 
- * @author helei 2015.07.22
+ * @author helei
+ * 2015.07.22
  *************************************************
  */
 @Deprecated

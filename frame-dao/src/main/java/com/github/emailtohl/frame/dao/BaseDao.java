@@ -27,10 +27,15 @@ import com.github.emailtohl.frame.util.BeanUtils;
 
 /**
  * 
- * 基于Orm注解，提供dao的基础功能，可被业务dao继承 （1）简单查询功能 （2）分页查询功能 （3）增、删、改功能 （4）批量增、删、改功能
+ * 基于Orm注解，提供dao的基础功能，可被业务dao继承 
+ * （1）简单查询功能 
+ * （2）分页查询功能 
+ * （3）增、删、改功能 
+ * （4）批量增、删、改功能
  * （5）数据同步功能
  * 
- * @author helei 2015.11.03
+ * @author helei \
+ * 2015.11.03
  */
 public class BaseDao {
 	private static final Logger logger = Logger.getLogger(BaseDao.class.getName());

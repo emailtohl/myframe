@@ -2,7 +2,8 @@
  * 全局环境中创建构造函数，组织上下文模块，本工具模仿requirejs，符合AMD风格
  * 为了让require、define方法有效，生成的实例最好是在全局空间中
  * 
- * version v1.0 author 何磊 date 2016.06.25
+ * version v1.0 author helei
+ * date 2016.06.25
  */
 function Context(baseUrl) {
 	var self = this, module = {}/* 存储被加载的模块 */, callbackMap = {}/* 存储所有回调函数，便于在条件满足时执行它们 */;

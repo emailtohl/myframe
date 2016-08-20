@@ -33,7 +33,7 @@ import java.util.TimeZone;
  * （2）XML序列化对象 java.beans.XMLEncoder的void writeObject(Object obj)方法会将对象序列化到流中
  * java.beans.XMLDecoder的Object readObject()方法会将流中的对象读取出来
  * 
- * @author 何磊
+ * @author helei
  * 2015.10.17 完成对象转json，对象转xml功能
  * 2015.10.23 完成json转Object功能
  */

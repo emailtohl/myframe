@@ -29,6 +29,7 @@ import javax.servlet.http.Part;
 
 /**
  * 本类使用HttpServletRequest和HttpServletResponse，与业务结合较紧，根据实际需要进行调整
+ * @author helei
  */
 public final class ServletUtils {
 	private static final Logger logger = Logger.getLogger(ServletUtils.class.getName());

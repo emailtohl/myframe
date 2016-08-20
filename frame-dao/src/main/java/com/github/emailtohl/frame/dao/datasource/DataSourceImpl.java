@@ -21,7 +21,8 @@ import com.github.emailtohl.frame.transition.TransitionHandler;
  * 例如，在事务管理过程中，调用Connection的close方法时，代理会根据isThreadStrategy为true而不真正执行close，
  * 直到事务管理器来执行
  * 
- * @author helei 2015.11.03
+ * @author helei
+ * 2015.11.03
  */
 public final class DataSourceImpl implements DataSource {
 	public static final Map<String, DataSource> dataSourcePool = new HashMap<String, DataSource>();

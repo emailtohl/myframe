@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * 存储po中的映射关系 存储po对应的preparedstatement语句和参数数组
+ * @author helei
  */
 public class SqlAndArgs {
 	private String tableName;// 此po对应的数据库表名

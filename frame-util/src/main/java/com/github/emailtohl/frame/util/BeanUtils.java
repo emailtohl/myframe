@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
  * 对于JavaBean更完善彻底的分析工具，可以使用JDK提供的BeanInfo接口，获取该接口的实例，可用Introspector类：
  * BeanInfo in = Introspector.getBeanInfo(beanClass);
  * 
- * @author 何磊
+ * @author helei
  * 2015.11.05
  */
 public final class BeanUtils {

@@ -22,7 +22,8 @@ import javax.persistence.Table;
 /**
  * 本类实现了OrmAnalyzer，可将JPA注解的信息解析到SqlAndArgs对象中
  * 
- * @author helei 2016.02.18
+ * @author helei
+ * 2016.02.18
  */
 public class JpaAnalyzer implements OrmAnalyzer {
 	private static final Logger logger = Logger.getLogger(JpaAnalyzer.class.getName());
