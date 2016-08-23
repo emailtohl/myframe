@@ -90,6 +90,7 @@ public class AuthenticationFilter implements Filter {
 		accesses2.add("supplier/page");
 		accesses2.add("supplier/add");
 		accesses2.add("supplier/update");
+		accesses2.add("file/download");
 		roleAccessMap.put(2, accesses2);
 		
 		Set<String> accesses1 = new HashSet<String>(accesses2);
