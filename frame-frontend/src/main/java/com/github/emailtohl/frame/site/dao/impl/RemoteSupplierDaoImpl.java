@@ -5,24 +5,24 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import com.github.emailtohl.frame.dao.BaseDao;
-import com.github.emailtohl.frame.site.dao.IRemoteSupplierDao;
+import com.github.emailtohl.frame.site.dao.RemoteSupplierDao;
 import com.github.emailtohl.frame.site.dao.po.RemoteSupplierPo;
 
-public final class RemoteSupplierDao extends BaseDao implements IRemoteSupplierDao {
-	private static RemoteSupplierDao remoteDao;
+public final class RemoteSupplierDaoImpl extends BaseDao implements RemoteSupplierDao {
+	private static RemoteSupplierDaoImpl remoteDao;
 
 	static {
 		String configFilePath = Thread.currentThread().getContextClassLoader()
 				.getResource("remoteDatabase.properties").getPath().substring(1);
 		DataSource ds = BaseDao.getDataSourceByPropertyFile(configFilePath);
-		remoteDao = new RemoteSupplierDao(ds);
+		remoteDao = new RemoteSupplierDaoImpl(ds);
 	}
 
-	private RemoteSupplierDao(DataSource ds) {
+	private RemoteSupplierDaoImpl(DataSource ds) {
 		super(ds);
 	}
 
-	public static RemoteSupplierDao getRemoteSupplierDaoInstance() {
+	public static RemoteSupplierDaoImpl getRemoteSupplierDaoInstance() {
 		return remoteDao;
 	}
 

@@ -21,8 +21,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-import com.github.emailtohl.frame.site.service.ISupplierDataSync;
-import com.github.emailtohl.frame.site.service.impl.SupplierDataSync;
+import com.github.emailtohl.frame.site.service.SupplierDataSync;
+import com.github.emailtohl.frame.site.service.impl.SupplierDataSyncImpl;
 import com.github.emailtohl.frame.transition.TransitionProxy;
 
 /**
@@ -32,13 +32,13 @@ import com.github.emailtohl.frame.transition.TransitionProxy;
 @WebListener
 public class DataSyncListenner implements ServletContextListener {
 	private final static Logger logger = Logger.getLogger(DataSyncListenner.class.getName());
-	private final ISupplierDataSync supplierDataSyncProxy;
+	private final SupplierDataSync supplierDataSyncProxy;
 
 	/**
 	 * Default constructor.
 	 */
 	public DataSyncListenner() {
-		supplierDataSyncProxy = TransitionProxy.getProxy(new SupplierDataSync());
+		supplierDataSyncProxy = TransitionProxy.getProxy(new SupplierDataSyncImpl());
 	}
 
 	/**

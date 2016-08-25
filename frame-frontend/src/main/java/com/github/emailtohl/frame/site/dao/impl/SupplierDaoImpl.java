@@ -10,24 +10,24 @@ import com.github.emailtohl.frame.dao.myjdbctemplate.BeanAnnotationRowMapper;
 import com.github.emailtohl.frame.dao.myjdbctemplate.RowMapper;
 import com.github.emailtohl.frame.dao.preparedstatementfactory.SqlAndArgs;
 import com.github.emailtohl.frame.dao.preparedstatementfactory.SqlBuilder;
-import com.github.emailtohl.frame.site.dao.ISupplierDao;
+import com.github.emailtohl.frame.site.dao.SupplierDao;
 import com.github.emailtohl.frame.site.dao.po.SupplierPo;
 import com.github.emailtohl.frame.site.dto.SupplierDto;
 
-public final class SupplierDao extends BaseDao implements ISupplierDao {
-	private static SupplierDao supplierDao;
+public final class SupplierDaoImpl extends BaseDao implements SupplierDao {
+	private static SupplierDaoImpl supplierDao;
 	private SqlBuilder sqlBuilder = new SqlBuilder();
 
-	private SupplierDao(DataSource ds) {
+	private SupplierDaoImpl(DataSource ds) {
 		super(ds);
 	}
 
-	public synchronized static SupplierDao getSupplierDaoInstance() {
+	public synchronized static SupplierDaoImpl getSupplierDaoInstance() {
 		if (supplierDao == null) {
 			String configFilePath = Thread.currentThread().getContextClassLoader()
 					.getResource("database.properties").getPath().substring(1);
 			DataSource ds = BaseDao.getDataSourceByPropertyFile(configFilePath);
-			supplierDao = new SupplierDao(ds);
+			supplierDao = new SupplierDaoImpl(ds);
 		}
 		return supplierDao;
 	}

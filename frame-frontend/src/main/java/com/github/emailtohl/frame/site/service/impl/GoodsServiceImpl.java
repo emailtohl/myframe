@@ -7,20 +7,20 @@ import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import com.github.emailtohl.frame.dao.Pager;
-import com.github.emailtohl.frame.site.dao.IGoodsDao;
-import com.github.emailtohl.frame.site.dao.impl.GoodsDao;
+import com.github.emailtohl.frame.site.dao.GoodsDao;
+import com.github.emailtohl.frame.site.dao.impl.GoodsDaoImpl;
 import com.github.emailtohl.frame.site.dto.GoodsDto;
 import com.github.emailtohl.frame.site.filter.AuthenticationFilter;
-import com.github.emailtohl.frame.site.service.IGoodsService;
+import com.github.emailtohl.frame.site.service.GoodsService;
 import com.github.emailtohl.frame.util.BeanUtils;
 import com.github.emailtohl.frame.util.CommonUtils;
 
-public class GoodsService implements IGoodsService {
-	private IGoodsDao goodsDao;
-	private static final Logger logger = Logger.getLogger(GoodsService.class.getName());
+public class GoodsServiceImpl implements GoodsService {
+	private GoodsDao goodsDao;
+	private static final Logger logger = Logger.getLogger(GoodsServiceImpl.class.getName());
 
-	public GoodsService() {
-		goodsDao = GoodsDao.getGoodsDaoInstance();
+	public GoodsServiceImpl() {
+		goodsDao = GoodsDaoImpl.getGoodsDaoInstance();
 	}
 
 	@Override

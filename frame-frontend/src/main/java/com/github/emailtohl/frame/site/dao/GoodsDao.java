@@ -5,7 +5,7 @@ import java.util.List;
 import com.github.emailtohl.frame.dao.Pager;
 import com.github.emailtohl.frame.site.dto.GoodsDto;
 
-public interface IGoodsDao {
+public interface GoodsDao {
 	List<GoodsDto> queryGoods(GoodsDto goodsDto);
 
 	Pager<GoodsDto> queryPage(GoodsDto goodsDto);

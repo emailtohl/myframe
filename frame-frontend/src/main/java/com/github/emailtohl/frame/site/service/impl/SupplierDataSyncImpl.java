@@ -2,18 +2,18 @@ package com.github.emailtohl.frame.site.service.impl;
 
 import java.util.List;
 
-import com.github.emailtohl.frame.site.dao.IRemoteSupplierDao;
-import com.github.emailtohl.frame.site.dao.ISupplierDao;
-import com.github.emailtohl.frame.site.dao.impl.RemoteSupplierDao;
-import com.github.emailtohl.frame.site.dao.impl.SupplierDao;
+import com.github.emailtohl.frame.site.dao.RemoteSupplierDao;
+import com.github.emailtohl.frame.site.dao.SupplierDao;
+import com.github.emailtohl.frame.site.dao.impl.RemoteSupplierDaoImpl;
+import com.github.emailtohl.frame.site.dao.impl.SupplierDaoImpl;
 import com.github.emailtohl.frame.site.dao.po.RemoteSupplierPo;
 import com.github.emailtohl.frame.site.dao.po.SupplierPo;
-import com.github.emailtohl.frame.site.service.ISupplierDataSync;
+import com.github.emailtohl.frame.site.service.SupplierDataSync;
 import com.github.emailtohl.frame.util.BeanUtils;
 
-public class SupplierDataSync implements ISupplierDataSync {
-	private IRemoteSupplierDao remoteDao = RemoteSupplierDao.getRemoteSupplierDaoInstance();// 访问远程数据库
-	private ISupplierDao supplierDao = SupplierDao.getSupplierDaoInstance();
+public class SupplierDataSyncImpl implements SupplierDataSync {
+	private RemoteSupplierDao remoteDao = RemoteSupplierDaoImpl.getRemoteSupplierDaoInstance();// 访问远程数据库
+	private SupplierDao supplierDao = SupplierDaoImpl.getSupplierDaoInstance();
 
 	public void syncSupplierData() {
 		List<RemoteSupplierPo> remoteSupplierList = remoteDao.querySupplier(new RemoteSupplierPo());

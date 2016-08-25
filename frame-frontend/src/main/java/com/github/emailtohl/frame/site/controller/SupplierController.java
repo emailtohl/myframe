@@ -12,18 +12,18 @@ import com.github.emailtohl.frame.dao.Pager;
 import com.github.emailtohl.frame.mvc.DispatcherServlet.JspUrl;
 import com.github.emailtohl.frame.mvc.Mvc;
 import com.github.emailtohl.frame.site.dto.SupplierDto;
-import com.github.emailtohl.frame.site.service.ISupplierService;
-import com.github.emailtohl.frame.site.service.impl.SupplierService;
+import com.github.emailtohl.frame.site.service.SupplierService;
+import com.github.emailtohl.frame.site.service.impl.SupplierServiceImpl;
 import com.github.emailtohl.frame.transition.TransitionProxy;
 import com.github.emailtohl.frame.util.ServletUtils;
 
 @Mvc(action = "supplier")
 public class SupplierController {
-	private ISupplierService supplierService;
+	private SupplierService supplierService;
 
 	public SupplierController() {
 		super();
-		supplierService = TransitionProxy.getProxy(new SupplierService());
+		supplierService = TransitionProxy.getProxy(new SupplierServiceImpl());
 	}
 
 	@Mvc(action = "page", method = GET)

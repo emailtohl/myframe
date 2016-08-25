@@ -18,23 +18,23 @@ import com.github.emailtohl.frame.mvc.DispatcherServlet.JspUrl;
 import com.github.emailtohl.frame.mvc.Mvc;
 import com.github.emailtohl.frame.site.dto.GoodsDto;
 import com.github.emailtohl.frame.site.dto.SupplierDto;
-import com.github.emailtohl.frame.site.service.IGoodsService;
-import com.github.emailtohl.frame.site.service.ISupplierService;
-import com.github.emailtohl.frame.site.service.impl.GoodsService;
-import com.github.emailtohl.frame.site.service.impl.SupplierService;
+import com.github.emailtohl.frame.site.service.GoodsService;
+import com.github.emailtohl.frame.site.service.SupplierService;
+import com.github.emailtohl.frame.site.service.impl.GoodsServiceImpl;
+import com.github.emailtohl.frame.site.service.impl.SupplierServiceImpl;
 import com.github.emailtohl.frame.transition.TransitionProxy;
 import com.github.emailtohl.frame.util.ServletUtils;
 
 @Mvc
 public class GoodsController {
 	private static Logger logger = Logger.getLogger(GoodsController.class.getName());
-	private IGoodsService goodsService;// 使用代理可以让业务逻辑层实现对底层dao的事务管理
-	private ISupplierService supplierService;
+	private GoodsService goodsService;// 使用代理可以让业务逻辑层实现对底层dao的事务管理
+	private SupplierService supplierService;
 
 	public GoodsController() {
 		super();
-		goodsService = TransitionProxy.getProxy(new GoodsService());
-		supplierService = TransitionProxy.getProxy(new SupplierService());
+		goodsService = TransitionProxy.getProxy(new GoodsServiceImpl());
+		supplierService = TransitionProxy.getProxy(new SupplierServiceImpl());
 	}
 
 	/**

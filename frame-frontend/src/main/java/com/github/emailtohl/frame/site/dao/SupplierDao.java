@@ -6,7 +6,7 @@ import com.github.emailtohl.frame.dao.Pager;
 import com.github.emailtohl.frame.site.dao.po.SupplierPo;
 import com.github.emailtohl.frame.site.dto.SupplierDto;
 
-public interface ISupplierDao {
+public interface SupplierDao {
 	List<SupplierDto> querySupplier(SupplierDto supplierDto);
 
 	Pager<SupplierDto> queryPage(SupplierDto supplierDto);

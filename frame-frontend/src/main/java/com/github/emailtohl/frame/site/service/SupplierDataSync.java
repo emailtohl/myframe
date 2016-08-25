@@ -1,5 +1,5 @@
 package com.github.emailtohl.frame.site.service;
 
-public interface ISupplierDataSync {
+public interface SupplierDataSync {
 	public void syncSupplierData();
 }

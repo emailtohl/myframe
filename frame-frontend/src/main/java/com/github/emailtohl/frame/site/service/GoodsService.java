@@ -5,7 +5,7 @@ import java.util.List;
 import com.github.emailtohl.frame.dao.Pager;
 import com.github.emailtohl.frame.site.dto.GoodsDto;
 
-public interface IGoodsService {
+public interface GoodsService {
 	List<GoodsDto> queryGoods(GoodsDto goodsDto);
 	
 	GoodsDto getGoodsById(Long id);

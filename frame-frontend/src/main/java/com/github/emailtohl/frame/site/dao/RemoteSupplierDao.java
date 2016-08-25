@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.github.emailtohl.frame.site.dao.po.RemoteSupplierPo;
 
-public interface IRemoteSupplierDao {
+public interface RemoteSupplierDao {
 	List<RemoteSupplierPo> querySupplier(RemoteSupplierPo remoteSupplierPo);
 
 	long addSupplier(RemoteSupplierPo remoteSupplierPo);

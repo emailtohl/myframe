@@ -5,7 +5,7 @@ import java.util.List;
 import com.github.emailtohl.frame.dao.Pager;
 import com.github.emailtohl.frame.site.dto.SupplierDto;
 
-public interface ISupplierService {
+public interface SupplierService {
 	List<SupplierDto> querySupplier(SupplierDto supplierDto);
 	
 	SupplierDto getSupplierById(Long id);

@@ -10,12 +10,12 @@ import com.github.emailtohl.frame.dao.Pager;
 import com.github.emailtohl.frame.dao.myjdbctemplate.BeanAnnotationRowMapper;
 import com.github.emailtohl.frame.dao.myjdbctemplate.RowMapper;
 import com.github.emailtohl.frame.dao.preparedstatementfactory.SqlAndArgs;
-import com.github.emailtohl.frame.site.dao.IGoodsDao;
+import com.github.emailtohl.frame.site.dao.GoodsDao;
 import com.github.emailtohl.frame.site.dto.GoodsDto;
 import com.github.emailtohl.frame.util.CommonUtils;
 
-public final class GoodsDao extends BaseDao implements IGoodsDao {
-	private static GoodsDao goodsDao;
+public final class GoodsDaoImpl extends BaseDao implements GoodsDao {
+	private static GoodsDaoImpl goodsDao;
 	private static final String SELECT;
 
 	static {
@@ -25,16 +25,16 @@ public final class GoodsDao extends BaseDao implements IGoodsDao {
 		SELECT = sql.toString();
 	}
 
-	private GoodsDao(DataSource ds) {
+	private GoodsDaoImpl(DataSource ds) {
 		super(ds);
 	}
 
-	public synchronized static GoodsDao getGoodsDaoInstance() {
+	public synchronized static GoodsDaoImpl getGoodsDaoInstance() {
 		if (goodsDao == null) {
 			String configFilePath = Thread.currentThread().getContextClassLoader()
 					.getResource("database.properties").getPath().substring(1);
 			DataSource ds = BaseDao.getDataSourceByPropertyFile(configFilePath);
-			goodsDao = new GoodsDao(ds);
+			goodsDao = new GoodsDaoImpl(ds);
 		}
 		return goodsDao;
 	}
