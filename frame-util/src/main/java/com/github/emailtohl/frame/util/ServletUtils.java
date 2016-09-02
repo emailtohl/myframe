@@ -295,7 +295,7 @@ public final class ServletUtils {
 					} catch (UnsupportedEncodingException e) {
 						e.printStackTrace();
 					}
-					BeanUtils.injectPropertyWithString(pd, obj, value);
+					JavaBeanTools.injectPropertyWithString(pd, obj, value);
 				}
 			}
 		} catch (IntrospectionException e) {

@@ -12,7 +12,7 @@ import com.github.emailtohl.frame.site.dao.impl.GoodsDaoImpl;
 import com.github.emailtohl.frame.site.dto.GoodsDto;
 import com.github.emailtohl.frame.site.filter.AuthenticationFilter;
 import com.github.emailtohl.frame.site.service.GoodsService;
-import com.github.emailtohl.frame.util.BeanUtils;
+import com.github.emailtohl.frame.util.JavaBeanTools;
 import com.github.emailtohl.frame.util.CommonUtils;
 
 public class GoodsServiceImpl implements GoodsService {
@@ -81,7 +81,7 @@ public class GoodsServiceImpl implements GoodsService {
 	}
 
 	private synchronized void updateRecord(GoodsDto preDto, GoodsDto afterDto) {
-		Map<String, Object> map = BeanUtils.getModifiedField(preDto, afterDto);
+		Map<String, Object> map = JavaBeanTools.getModifiedField(preDto, afterDto);
 		Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator();
 		while (it.hasNext()) {
 			Entry<String, Object> entry = it.next();

@@ -1,18 +1,19 @@
 package com.github.emailtohl.frame.util;
 
-import static com.github.emailtohl.frame.util.BeanUtils.compareProperties;
-import static com.github.emailtohl.frame.util.BeanUtils.copyList;
-import static com.github.emailtohl.frame.util.BeanUtils.copyProperties;
-import static com.github.emailtohl.frame.util.BeanUtils.deepCopy;
-import static com.github.emailtohl.frame.util.BeanUtils.fieldMap;
-import static com.github.emailtohl.frame.util.BeanUtils.getDeclaredField;
-import static com.github.emailtohl.frame.util.BeanUtils.getFieldMap;
-import static com.github.emailtohl.frame.util.BeanUtils.getModifiedField;
-import static com.github.emailtohl.frame.util.BeanUtils.injectField;
-import static com.github.emailtohl.frame.util.BeanUtils.injectFieldWithString;
-import static com.github.emailtohl.frame.util.BeanUtils.merge;
-import static com.github.emailtohl.frame.util.BeanUtils.propertyMap;
-import static com.github.emailtohl.frame.util.BeanUtils.saveListToMap;
+import static com.github.emailtohl.frame.util.JavaBeanTools.compareProperties;
+import static com.github.emailtohl.frame.util.JavaBeanTools.copyList;
+import static com.github.emailtohl.frame.util.JavaBeanTools.copyProperties;
+import static com.github.emailtohl.frame.util.JavaBeanTools.deepCopy;
+import static com.github.emailtohl.frame.util.JavaBeanTools.getDeclaredField;
+import static com.github.emailtohl.frame.util.JavaBeanTools.getFieldMap;
+import static com.github.emailtohl.frame.util.JavaBeanTools.getFieldNameValueMap;
+import static com.github.emailtohl.frame.util.JavaBeanTools.getModifiedField;
+import static com.github.emailtohl.frame.util.JavaBeanTools.getPropertyMap;
+import static com.github.emailtohl.frame.util.JavaBeanTools.getPropertyNameValueMap;
+import static com.github.emailtohl.frame.util.JavaBeanTools.injectField;
+import static com.github.emailtohl.frame.util.JavaBeanTools.injectFieldWithString;
+import static com.github.emailtohl.frame.util.JavaBeanTools.merge;
+import static com.github.emailtohl.frame.util.JavaBeanTools.saveListToMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -46,15 +47,15 @@ import com.github.emailtohl.frame.util.entities.Person.Gender;
 import com.github.emailtohl.frame.util.entities.Role;
 import com.github.emailtohl.frame.util.entities.User;
 
-public class BeanUtilsTest {
+public class JavaBeanToolsTest {
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	Permission p1 = new Permission(), p2 = new Permission(), p3 = new Permission(), p4 = new Permission();
 	Role admin = new Role(), user = new Role();
 	User emailtohl = new User(), foo = new User(), bar = new User();
 
 	@Test
-	public void testGetFieldMap() {
-		Map<String, Object> map = getFieldMap(emailtohl);
+	public void testGetFieldNameValueMap() {
+		Map<String, Object> map = getFieldNameValueMap(emailtohl);
 		System.out.println(map);
 		assertTrue((boolean) map.get("enabled"));
 		assertEquals("emailtohl@163.com", map.get("nickname"));
@@ -63,16 +64,23 @@ public class BeanUtilsTest {
 	}
 	
 	@Test
-	public void testPropertyMap() {
-		Map<String, PropertyDescriptor> map = propertyMap(emailtohl);
+	public void testGetPropertyMap() {
+		Map<String, PropertyDescriptor> map = getPropertyMap(emailtohl);
 		System.out.println(map.keySet());
 		assertNotNull(map.get("id"));
 	}
+	
+	@Test
+	public void testGetPropertyNameValueMap() {
+		Map<String, Object> map = getPropertyNameValueMap(emailtohl);
+		System.out.println(map);
+		assertEquals("hl", map.get("name"));
+	}
 
 	@Test
-	public void testFieldMap() {
+	public void testGetFieldMap() {
 		Pattern p = Pattern.compile("<(\\w+(\\.\\w+)*)>");
-		Map<String, Field> map = fieldMap(emailtohl);
+		Map<String, Field> map = getFieldMap(emailtohl);
 		Field f = map.get("authority");
 		Type t = f.getGenericType();
 		System.out.println(t);
@@ -159,7 +167,7 @@ public class BeanUtilsTest {
 			}
 		}
 		TestBean t = new TestBean();
-		Map<String, Field> map = fieldMap(t);
+		Map<String, Field> map = getFieldMap(t);
 		injectField(map.get("i"), t, 2);
 		injectField(map.get("b1"), t, false);
 		injectField(map.get("b2"), t, false);
@@ -193,7 +201,7 @@ public class BeanUtilsTest {
 			}
 		}
 		TestBean t = new TestBean();
-		Map<String, Field> map = fieldMap(t);
+		Map<String, Field> map = getFieldMap(t);
 		injectFieldWithString(map.get("i"), t, "2");
 		injectFieldWithString(map.get("b"), t, "false");
 		injectFieldWithString(map.get("by"), t, "2");
@@ -261,22 +269,22 @@ public class BeanUtilsTest {
 			String name = pd.getName();
 			switch (name) {
 			case "i":
-				BeanUtils.injectPropertyWithString(pd, t, "2");
+				JavaBeanTools.injectPropertyWithString(pd, t, "2");
 				break;
 			case "b":
-				BeanUtils.injectPropertyWithString(pd, t, "false");
+				JavaBeanTools.injectPropertyWithString(pd, t, "false");
 				break;
 			case "by":
-				BeanUtils.injectPropertyWithString(pd, t, "2");
+				JavaBeanTools.injectPropertyWithString(pd, t, "2");
 				break;
 			case "c":
-				BeanUtils.injectPropertyWithString(pd, t, "a");
+				JavaBeanTools.injectPropertyWithString(pd, t, "a");
 				break;
 			case "gender":
-				BeanUtils.injectPropertyWithString(pd, t, "FEMALE");
+				JavaBeanTools.injectPropertyWithString(pd, t, "FEMALE");
 				break;
 			case "birthday":
-				BeanUtils.injectPropertyWithString(pd, t, "1982-02-12");
+				JavaBeanTools.injectPropertyWithString(pd, t, "1982-02-12");
 				break;
 			default:
 
@@ -338,10 +346,10 @@ public class BeanUtilsTest {
 	@Test
 	public void testGetGenericClassField() throws NoSuchFieldException, SecurityException {
 		Class<TestGenericType> c = TestGenericType.class;
-		assertEquals(Gender.class, BeanUtils.getGenericClass(c.getDeclaredField("set"))[0]);
-		assertEquals(Role.class, BeanUtils.getGenericClass(c.getDeclaredField("ls"))[0]);
-		assertEquals(Integer.class, BeanUtils.getGenericClass(c.getDeclaredField("map"))[0]);
-		assertEquals(Contact.class, BeanUtils.getGenericClass(c.getDeclaredField("map"))[1]);
+		assertEquals(Gender.class, JavaBeanTools.getGenericClass(c.getDeclaredField("set"))[0]);
+		assertEquals(Role.class, JavaBeanTools.getGenericClass(c.getDeclaredField("ls"))[0]);
+		assertEquals(Integer.class, JavaBeanTools.getGenericClass(c.getDeclaredField("map"))[0]);
+		assertEquals(Contact.class, JavaBeanTools.getGenericClass(c.getDeclaredField("map"))[1]);
 	}
 
 	@Test
@@ -349,16 +357,16 @@ public class BeanUtilsTest {
 		BeanInfo bi = Introspector.getBeanInfo(TestGenericType.class, Object.class);
 		for (PropertyDescriptor p : bi.getPropertyDescriptors()) {
 			if ("set".equals(p.getName())) {
-				assertEquals(Gender.class, BeanUtils.getGenericClass(p)[0]);
+				assertEquals(Gender.class, JavaBeanTools.getGenericClass(p)[0]);
 			}
 			if ("ls".equals(p.getName())) {
-				assertEquals(Role.class, BeanUtils.getGenericClass(p)[0]);
+				assertEquals(Role.class, JavaBeanTools.getGenericClass(p)[0]);
 			}
 			if ("map".equals(p.getName())) {
-				assertEquals(Integer.class, BeanUtils.getGenericClass(p)[0]);
+				assertEquals(Integer.class, JavaBeanTools.getGenericClass(p)[0]);
 			}
 			if ("map".equals(p.getName())) {
-				assertEquals(Contact.class, BeanUtils.getGenericClass(p)[1]);
+				assertEquals(Contact.class, JavaBeanTools.getGenericClass(p)[1]);
 			}
 		}
 	}
