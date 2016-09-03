@@ -143,7 +143,9 @@ public final class BeanTools {
 		Map<String, Object> nvmap = new HashMap<String, Object>();
 		for (Entry<String, PropertyDescriptor> e : pmap.entrySet()) {
 			try {
-				Object value = e.getValue().getReadMethod().invoke(javabean, new Object[] {});
+				Method m = e.getValue().getReadMethod();
+				m.setAccessible(true);
+				Object value = m.invoke(javabean, new Object[] {});
 				nvmap.put(e.getKey(), value);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
 				logger.log(Level.SEVERE, "getter访问失败", e);
