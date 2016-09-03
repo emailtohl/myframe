@@ -12,7 +12,7 @@ import com.github.emailtohl.frame.site.dao.impl.SupplierDaoImpl;
 import com.github.emailtohl.frame.site.dto.SupplierDto;
 import com.github.emailtohl.frame.site.filter.AuthenticationFilter;
 import com.github.emailtohl.frame.site.service.SupplierService;
-import com.github.emailtohl.frame.util.JavaBeanTools;
+import com.github.emailtohl.frame.util.BeanTools;
 
 public class SupplierServiceImpl implements SupplierService {
 	private static final Logger logger = Logger.getLogger(SupplierServiceImpl.class.getName());
@@ -78,7 +78,7 @@ public class SupplierServiceImpl implements SupplierService {
 	}
 
 	private void updateRecord(SupplierDto preDto, SupplierDto afterDto) {
-		Map<String, Object> map = JavaBeanTools.getModifiedField(preDto, afterDto);
+		Map<String, Object> map = BeanTools.getModifiedField(preDto, afterDto);
 		Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator();
 		while (it.hasNext()) {
 			Entry<String, Object> entry = it.next();

@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.github.emailtohl.frame.dao.preparedstatementfactory.Orm;
-import com.github.emailtohl.frame.util.JavaBeanTools;
+import com.github.emailtohl.frame.util.BeanTools;
 
 /**
  *************************************************
@@ -47,7 +47,7 @@ public class BeanAnnotationRowMapper<T> implements RowMapper<T> {
 				String columnLabel = entry.getKey();
 				Field field = entry.getValue();
 				Object obj = resultSet.getObject(columnLabel);
-				JavaBeanTools.injectField(field, po, obj);// 此工具方法可以对基本类型的属性注入值
+				BeanTools.injectField(field, po, obj);// 此工具方法可以对基本类型的属性注入值
 			}
 		} catch (IllegalAccessException | InstantiationException e) {
 			e.printStackTrace();

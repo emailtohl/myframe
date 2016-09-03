@@ -23,7 +23,7 @@ import com.github.emailtohl.frame.dao.myjdbctemplate.RowMapper;
 import com.github.emailtohl.frame.dao.myjdbctemplate.SimpleJdbcTemplate;
 import com.github.emailtohl.frame.dao.preparedstatementfactory.SqlAndArgs;
 import com.github.emailtohl.frame.dao.preparedstatementfactory.SqlBuilder;
-import com.github.emailtohl.frame.util.JavaBeanTools;
+import com.github.emailtohl.frame.util.BeanTools;
 
 /**
  * 
@@ -284,11 +284,11 @@ public class BaseDao {
 			// 考虑有标记删除的场景
 			if (markDeletedColumnLabel != null && markDeletedColumnLabel.length() != 0) {
 				String propertyName = sa.getColumnPropertyMap().get(markDeletedColumnLabel).getPropertyName();
-				Field f = JavaBeanTools.getDeclaredField(po, propertyName);
+				Field f = BeanTools.getDeclaredField(po, propertyName);
 				// 考虑到po标记删除位初始值未知，故显式地，分别地，查询已做标记删除和未做标记删除的记录
-				JavaBeanTools.injectField(f, po, null);
+				BeanTools.injectField(f, po, null);
 				localList = query(po);
-				JavaBeanTools.injectField(f, po, 1);
+				BeanTools.injectField(f, po, 1);
 				localList.addAll(query(po));
 			} else {
 				localList = query(po);
@@ -298,7 +298,7 @@ public class BaseDao {
 			throw new IllegalArgumentException("创建po实例异常，检查po对象是否有无参构造器");
 		}
 		// 将本地记录list转存到Map中，key是po的注解，值是po
-		Map<Serializable, T> localMap = JavaBeanTools.saveListToMap(localList, keyName);
+		Map<Serializable, T> localMap = BeanTools.saveListToMap(localList, keyName);
 		Set<Serializable> existSet = new HashSet<Serializable>();// 使用一个Set来跟踪每一个远程记录的key
 		List<SqlAndArgs> sal = new ArrayList<SqlAndArgs>();// 用于存储批量sql和参数
 		try {
@@ -315,7 +315,7 @@ public class BaseDao {
 				} else {
 					// 比较操作
 					if (!srcPo.equals(localPo)) {// 用户程序需实现po的equals()/hashCode()方法
-						JavaBeanTools.injectField(keyField, condition, key);
+						BeanTools.injectField(keyField, condition, key);
 						// 第三个参数是true表示即便是null也写入update语句中
 						sa = sqlBuilder.getUpdateStatement(srcPo, condition, true);
 						sal.add(sa);
@@ -327,7 +327,7 @@ public class BaseDao {
 				Object key = keyField.get(localPo);
 				if (!existSet.contains(key)) {// 说明远程数据源已经没有这条数据了
 					// 删除工作
-					JavaBeanTools.injectField(keyField, condition, key);
+					BeanTools.injectField(keyField, condition, key);
 					sa = sqlBuilder.getDeleteStatement(condition);
 					sal.add(sa);
 				}

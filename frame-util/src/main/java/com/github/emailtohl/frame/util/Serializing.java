@@ -109,7 +109,7 @@ public class Serializing {
 					}
 					set.add(obj);
 					json.append('{');
-					Map<String, Field> map = JavaBeanTools.getFieldMap(obj);
+					Map<String, Field> map = BeanTools.getFieldMap(obj);
 					boolean first = true;
 					for (Map.Entry<String, Field> entry : map.entrySet()) {
 						Field field = entry.getValue();
@@ -200,7 +200,7 @@ public class Serializing {
 					set.add(obj);
 					String tagName = clz.getSimpleName();
 					xml.append('<').append(tagName).append('>');
-					Map<String, Field> map = JavaBeanTools.getFieldMap(obj);
+					Map<String, Field> map = BeanTools.getFieldMap(obj);
 					for (Map.Entry<String, Field> entry : map.entrySet()) {
 						Field field = entry.getValue();
 						int mod = field.getModifiers();
