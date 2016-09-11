@@ -3,7 +3,6 @@ package com.github.emailtohl.frame.context;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
@@ -29,7 +28,9 @@ public class Container extends TreeMap<Class<?>, Object> {
 		super();
 		Set<Class<?>> classSet = PackageScanner.getClasses(packagePath);
 		filter(classSet);
-		fetch(classSet);
+		for (Class<?> clz : classSet) {
+			beanSet.add(analyze(clz));
+		}
 	}
 	
 	/**
@@ -46,40 +47,44 @@ public class Container extends TreeMap<Class<?>, Object> {
 	}
 	
 	/**
-	 * 将类的信息填充进Bean对象中，进行建模工作
+	 * 分析类的信息，然后填充进Bean对象中，进行建模工作
 	 */
-	private void fetch(Set<Class<?>> classSet) {
-		for (Class<?> clz : classSet) {
-			Bean b = new Bean();
-			Component c = clz.getAnnotation(Component.class);
-			String name = c.name();
-			if (name.isEmpty()) {
-				name = clz.getSimpleName();
-				name = name.substring(0, 1).toLowerCase() + name.substring(1);
+	private Bean analyze(Class<?> clz) {
+		Bean b = new Bean();
+		Component c = clz.getAnnotation(Component.class);
+		if (c == null) {
+			return null;
+		}
+		String name = c.name();
+		if (name.isEmpty()) {
+			name = clz.getSimpleName();
+			name = name.substring(0, 1).toLowerCase() + name.substring(1);
+		}
+		b.setName(name);
+		b.setType(clz);
+		Object instance;
+		try {
+			instance = clz.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			logger.log(Level.SEVERE, clz.getName() + "不能实例化，必须提供一个无参构造器", e);
+			e.printStackTrace();
+			throw new IllegalArgumentException(clz.getName() + "不能实例化，必须提供一个无参构造器", e);
+		}
+		b.setInstance(instance);
+		// 处理依赖关系
+		for (Entry<String, Field> e : BeanTools.getFieldMap(instance).entrySet()) {
+			Field f = e.getValue();
+			f.setAccessible(true);
+			Inject inj = f.getAnnotation(Inject.class);
+			if (inj == null) {
+				continue;
 			}
-			b.setName(name);
-			b.setType(clz);
-			Object instance;
-			try {
-				instance = clz.newInstance();
-			} catch (InstantiationException | IllegalAccessException e) {
-				logger.log(Level.SEVERE, clz.getName() + "不能实例化，必须提供一个无参构造器", e);
-				e.printStackTrace();
-				throw new IllegalArgumentException(clz.getName() + "不能实例化，必须提供一个无参构造器", e);
-			}
-			b.setInstance(instance);
-			// 处理依赖关系，若Bean不存在会递归分析
-			for (Entry<String, Field> e : BeanTools.getFieldMap(instance).entrySet()) {
-				Field f = e.getValue();
-				f.setAccessible(true);
-				Inject inj = f.getAnnotation(Inject.class);
-				if (inj == null) {
-					continue;
-				}
+			Bean subBean = analyze(e.getValue().getType());
+			if (subBean != null) {
 				b.getDependencies().add(new Bean());
 			}
-			
-			beanSet.add(b);
 		}
+		return b;
 	}
+
 }

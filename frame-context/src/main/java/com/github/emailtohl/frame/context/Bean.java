@@ -2,7 +2,6 @@ package com.github.emailtohl.frame.context;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 /**
  * 对容器进行建模，包含依赖注入的必要信息
