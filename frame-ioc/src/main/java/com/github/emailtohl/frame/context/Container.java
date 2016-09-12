@@ -27,18 +27,20 @@ public class Container implements Serializable {
 	private static final long serialVersionUID = -5858462858295708970L;
 	private static final Logger logger = LogManager.getLogManager().getLogger(BeanTools.class.getName());
 	private TreeMap<Class<?>, Bean> context = new TreeMap<Class<?>, Bean>();
-	private Set<Bean> beanSet = new HashSet<Bean>();
 	
 	public Container(String packagePath) {
 		super();
 		Set<Class<?>> classSet = PackageScanner.getClasses(packagePath);
 		// 第一步，过滤无关的Class
 		filter(classSet);
-		// 第二步，对依赖关系进行建模
+		// 第二步，对依赖关系进行建模，并存储进映射表中
 		for (Class<?> clz : classSet) {
 			Bean b = new Bean();
 			setDependencies(b, clz);
+			context.put(clz, b);
 		}
+		// 第三步，根据优先级，实例化Bean，并注入依赖
+		
 	}
 	
 	/**
@@ -102,6 +104,15 @@ public class Container implements Serializable {
 			sb.add(be);
 		}
 		b.getDependencies().addAll(sb);
+	}
+	
+	/**
+	 * 根据优先级，实例化Bean，并注入依赖
+	 */
+	private void newInstance() {
+		for (Entry<Class<?>, Bean> e : context.entrySet()) {
+			Class<?> clz = e.getKey();
+		}
 	}
 	
 	/**

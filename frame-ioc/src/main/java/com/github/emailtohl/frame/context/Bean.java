@@ -26,7 +26,16 @@ public class Bean implements Serializable, Comparable<Object> {
 
 	@Override
 	public int compareTo(Object o) {
-		return 0;
+		int result = 0;
+		if (o instanceof Bean) {
+			Bean b = (Bean) o;
+			if (dependencies.contains(b)) {
+				result = 1;
+			} else if (b.dependencies.contains(this)) {
+				result = -1;
+			}
+		}
+		return result;
 	}
 
 	
