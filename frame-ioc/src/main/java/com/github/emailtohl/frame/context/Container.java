@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class Container implements Serializable {
 			context.put(clz, b);
 		}
 		// 第三步，根据优先级，实例化Bean，并注入依赖
-		
+		newInstance();
 	}
 	
 	/**
@@ -146,6 +147,56 @@ public class Container implements Serializable {
 				}
 			}
 			// 创建好实例后，先调用JavaBean的setter方法注入实例
+			try {
+				for (PropertyDescriptor p : Introspector.getBeanInfo(clz, Object.class).getPropertyDescriptors()) {
+					Method m = p.getWriteMethod();
+					if (m == null) {
+						continue;
+					}
+					Inject inject = m.getAnnotation(Inject.class);
+					if (inject == null) {
+						continue;
+					}
+					m.setAccessible(true);
+					String name = "";
+					Named named = m.getAnnotation(Named.class);
+					if (named != null) {
+						name = named.value();
+					}
+					Object param = getInstance(context.get(p.getPropertyType()), name);
+					if (param == null) {
+						throw new RuntimeException("没有找到Bean实例");
+					}
+					m.invoke(instance, param);
+				}
+			} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
+				e1.printStackTrace();
+				logger.log(Level.SEVERE, "访问JavaBean属性发生异常", e1);
+			}
+			// 最后在Field字段中注入
+			for (Entry<String, Field> entry : BeanTools.getFieldMap(instance).entrySet()) {
+				Field f = entry.getValue();
+				Inject inject = f.getAnnotation(Inject.class);
+				if (inject == null) {
+					continue;
+				}
+				f.setAccessible(true);
+				String name = "";
+				Named named = f.getAnnotation(Named.class);
+				if (named != null) {
+					name = named.value();
+				}
+				Object param = getInstance(context.get(f.getType()), name);
+				if (param == null) {
+					throw new RuntimeException("没有找到Bean实例");
+				}
+				try {
+					f.set(instance, param);
+				} catch (IllegalArgumentException | IllegalAccessException e1) {
+					e1.printStackTrace();
+					logger.log(Level.SEVERE, "访问Field字段发生异常", e1);
+				}
+			}
 			
 		}
 	}
