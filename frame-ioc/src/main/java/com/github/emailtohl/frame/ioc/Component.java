@@ -1,4 +1,4 @@
-package com.github.emailtohl.frame.context;
+package com.github.emailtohl.frame.ioc;
 
 import static java.lang.annotation.ElementType.TYPE;
 

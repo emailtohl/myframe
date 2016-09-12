@@ -1,4 +1,4 @@
-package com.github.emailtohl.frame.context;
+package com.github.emailtohl.frame.ioc;
 
 import java.io.Serializable;
 import java.util.HashMap;
