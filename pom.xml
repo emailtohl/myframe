@@ -7,7 +7,7 @@
 	<packaging>pom</packaging>
 	
 	<modules>
-		<module>frame-context</module>
+		<module>frame-ioc</module>
 		<module>frame-dao</module>
 		<module>frame-mvc</module>
 		<module>frame-util</module>
