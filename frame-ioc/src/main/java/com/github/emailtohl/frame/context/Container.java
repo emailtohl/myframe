@@ -6,8 +6,10 @@ import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
@@ -16,6 +18,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.github.emailtohl.frame.util.BeanTools;
 import com.github.emailtohl.frame.util.PackageScanner;
@@ -110,9 +113,64 @@ public class Container implements Serializable {
 	 * 根据优先级，实例化Bean，并注入依赖
 	 */
 	private void newInstance() {
+		Object instance = null;
 		for (Entry<Class<?>, Bean> e : context.entrySet()) {
 			Class<?> clz = e.getKey();
+			for (Constructor<?> constructor : clz.getConstructors()) {
+				Inject inject = constructor.getAnnotation(Inject.class);
+				if (inject == null) {
+					continue;
+				}
+				Object[] initargs = new Object[constructor.getParameterTypes().length];
+				int i = 0;
+				for (Class<?> pt : constructor.getParameterTypes()) {
+					initargs[i++] = getInstance(context.get(pt), "");
+				}
+				try {
+					instance = constructor.newInstance(initargs);
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException e1) {
+					e1.printStackTrace();
+					logger.log(Level.SEVERE, "构造器创建实例时发生异常", e1);
+				}
+				break;
+			}
+			// 如果不是构造器创建的实例，那么就直接new一个出来
+			if (instance == null) {
+				try {
+					instance = clz.newInstance();
+				} catch (InstantiationException | IllegalAccessException e1) {
+					e1.printStackTrace();
+					logger.log(Level.SEVERE, "默认构造器创建实例时发生异常，需提供无惨的默认构造器", e1);
+					throw new IllegalArgumentException();
+				}
+			}
+			// 创建好实例后，先调用JavaBean的setter方法注入实例
+			
 		}
+	}
+	
+	/**
+	 * 在Bean中提取实例
+	 * @param b
+	 * @param name
+	 * @return
+	 */
+	private Object getInstance(Bean b, String name) {
+		Object instance = null;
+		Map<String, Object> instances = b.getInstances();
+		int size = instances.entrySet().size();
+		if (size == 0) {
+			throw new IllegalArgumentException("至少需要一个满足装配的实例");
+		} else if (size > 1) {
+			if (name.isEmpty()) {
+				throw new IllegalArgumentException("超过一个满足的实例，需要指定Bean的name");
+			}
+			instance = instances.get(name);
+		} else if (size == 1) {
+			instance = instances.entrySet().toArray()[0];
+		}
+		return instance;
 	}
 	
 	/**
