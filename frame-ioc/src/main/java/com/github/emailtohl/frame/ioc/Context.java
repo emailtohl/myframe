@@ -35,7 +35,7 @@ public class Context {
 	/**
 	 * 通过name（id）查找实例模型
 	 */
-	private Map<String, InstanceModel> strModelMap = new HashMap<String, InstanceModel>();
+	private Map<String, InstanceModel> nameModelMap = new HashMap<String, InstanceModel>();
 	/**
 	 * 通过class查找实例模型
 	 */
@@ -58,6 +58,37 @@ public class Context {
 		TreeSet<InstanceModel> instanceModelSet = getDependencies(classSet);
 		// 第三步，实例化，依赖注入
 		newInstanceAndInjectDependencies(instanceModelSet);
+	}
+	
+	/**
+	 * 将实例纳入容器统一管理，所有依赖将被自动注入
+	 * @param name 实例名
+	 * @param instance 实例对象
+	 */
+	public void register(String name, Object instance) {
+		if (nameInstanceMap.containsKey(name)) {
+			throw new RuntimeException("已有相同实例名");
+		}
+		Class<?> clz = instance.getClass();
+		InstanceModel model = new InstanceModel();
+		model.setInstance(instance);
+		model.setName(name);
+		model.setType(clz);
+		// 下面创建依赖列表
+		Set<Class<?>> dependencyClassSet = new HashSet<Class<?>>();
+		dependencyClassSet.addAll(getDependenciesByConstructor(clz));
+		dependencyClassSet.addAll(getDependenciesByProperties(clz));
+		dependencyClassSet.addAll(getDependenciesByField(clz));
+		TreeSet<InstanceModel> ts = getDependencies(dependencyClassSet);
+		model.setDependencies(ts);
+		// 为该实例执行依赖注入
+		injectProperty(instance);
+		injectField(instance);
+		// 最后添加进创建好的表中
+		nameModelMap.put(name, model);
+		typeModelMap.put(clz, model);
+		nameInstanceMap.put(name, instance);
+		typeInstanceMap.put(clz, instance);
 	}
 	
 	/**
@@ -100,7 +131,7 @@ public class Context {
 	 * @return 实例，若未查到，则返回null
 	 */
 	public Object getInstance(String name) {
-		return strModelMap.get(name);
+		return nameModelMap.get(name);
 	}
 	
 	/**
@@ -159,7 +190,7 @@ public class Context {
 		TreeSet<InstanceModel> instanceModels = new TreeSet<InstanceModel>();
 		for (Class<?> clz : classSet) {
 			String name = getNameByClass(clz);
-			InstanceModel model = strModelMap.get(name);
+			InstanceModel model = nameModelMap.get(name);
 			// 如果已经被创建过，则继续分析下一个class
 			if (model == null) {
 				model = new InstanceModel();
@@ -173,7 +204,7 @@ public class Context {
 				TreeSet<InstanceModel> ts = getDependencies(dependencyClassSet);
 				model.setDependencies(ts);
 				// 最后添加进创建好的表中
-				strModelMap.put(name, model);
+				nameModelMap.put(name, model);
 				typeModelMap.put(clz, model);
 			}
 			// 添加进TreeMap时，顺序会按照InstanceModel的compareTo规则排序
