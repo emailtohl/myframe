@@ -226,7 +226,7 @@ public class Context {
 				}
 			}
 			// 创建好实例后，先调用JavaBean的setter方法注入实例
-			injectProperty(clz, instance);
+			injectProperty(instance);
 			// 最后在Field字段中注入
 			injectField(instance);
 			nameInstanceMap.put(getNameByClass(clz), instance);
@@ -278,10 +278,10 @@ public class Context {
 	
 	/**
 	 * 通过JavaBean属性注入实例
-	 * @param clz
 	 * @param instance
 	 */
-	private void injectProperty(Class<?> clz, Object instance) {
+	private void injectProperty(Object instance) {
+		Class<?> clz = instance.getClass();
 		try {
 			for (PropertyDescriptor p : Introspector.getBeanInfo(clz, Object.class).getPropertyDescriptors()) {
 				Method m = p.getWriteMethod();
