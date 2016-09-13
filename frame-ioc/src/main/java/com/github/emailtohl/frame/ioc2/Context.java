@@ -35,6 +35,10 @@ import com.github.emailtohl.frame.util.PackageScanner;
 public class Context {
 	private static final Logger logger = LogManager.getLogManager().getLogger(BeanTools.class.getName());
 	/**
+	 * 存储所有被Component注解的Class的模型集合
+	 */
+	private Set<InstanceModel> instanceModelSet = new HashSet<InstanceModel>();
+	/**
 	 * 通过name（id）查找实例模型
 	 */
 	private Map<String, InstanceModel> nameModelMap = new HashMap<String, InstanceModel>();
@@ -48,10 +52,12 @@ public class Context {
 		Set<Class<?>> classSet = PackageScanner.getClasses(packagePath);
 		// 第一步，过滤无关的Class
 		filter(classSet);
-		// 第二步，对依赖关系进行建模
-		TreeSet<InstanceModel> instanceModelSet = createInstanceModelSet(classSet);
-		// 第三步，实例化，依赖注入
-		newInstanceAndInjectDependencies(instanceModelSet);
+		// 第二步，为每个被Component注解的Class创建InstanceModel
+		initInstanceModelSet(classSet);
+		// 第三步，对依赖关系进行建模
+		TreeSet<InstanceModel> dependenciesSet = getDependenciesSet();
+		// 第四步，实例化，依赖注入
+		newInstance(dependenciesSet);
 	}
 	
 	/**
@@ -59,7 +65,7 @@ public class Context {
 	 * @param name 实例名
 	 * @param instance 实例对象
 	 */
-	public void register(String name, Object instance) {
+	public synchronized void register(String name, Object instance) {
 		if (nameModelMap.containsKey(name)) {
 			throw new RuntimeException("已有相同实例名");
 		}
@@ -69,15 +75,13 @@ public class Context {
 		model.setName(name);
 		model.setType(clz);
 		// 下面创建依赖列表
-		Set<Class<?>> dependencyClassSet = new HashSet<Class<?>>();
+		Set<Class<?>> classSet = new HashSet<Class<?>>();
 //		既然已经实例化了，所以不依赖构造器的参数
-//		dependencyClassSet.addAll(getDependenciesByConstructor(clz));
-		dependencyClassSet.addAll(getDependenciesByProperties(clz));
-		dependencyClassSet.addAll(getDependenciesByField(clz));
-		TreeSet<InstanceModel> ts = createInstanceModelSet(dependencyClassSet);
-		for (InstanceModel m : ts) {
-			model.getDependencies().add(m.getType());
-		}
+//		classSet.addAll(getDependenciesByConstructor(clz));
+		classSet.addAll(getDependenciesByProperties(clz));
+		classSet.addAll(getDependenciesByField(clz));
+		model.getDependencies().addAll(classSet);
+		instanceModelSet.add(model);
 		// 为该实例执行依赖注入
 		injectProperty(instance);
 		injectField(instance);
@@ -177,41 +181,32 @@ public class Context {
 	}
 	
 	/**
-	 * 对依赖关系进行建模
-	 * 同时将实例模型维护到相应查询Map中，除了具体的实例
+	 * 初始化InstanceModel集合
 	 * @param classSet 扫描出来，带有Component注解的Class集合
 	 */
-	private TreeSet<InstanceModel> createInstanceModelSet(Set<Class<?>> classSet) {
-		TreeSet<InstanceModel> instanceModels = new TreeSet<InstanceModel>();
+	private void initInstanceModelSet(Set<Class<?>> classSet) {
 		for (Class<?> clz : classSet) {
-			Component c = clz.getAnnotation(Component.class);
-			if (c == null) {
-				continue;
-			}
-			String name = getNameByClass(clz);
-			InstanceModel model = nameModelMap.get(name);
-			// 如果已经被创建过，则继续分析下一个class
-			if (model == null) {
-				model = new InstanceModel();
-				model.setName(name);
-				model.setType(clz);
-				// 下面创建依赖列表
-				Set<Class<?>> dependenciesClassSet = new HashSet<Class<?>>();
-				dependenciesClassSet.addAll(getDependenciesByConstructor(clz));
-				dependenciesClassSet.addAll(getDependenciesByProperties(clz));
-				dependenciesClassSet.addAll(getDependenciesByField(clz));
-				TreeSet<InstanceModel> ts = createInstanceModelSet(dependenciesClassSet);
-				for (InstanceModel m : ts) {
-					model.getDependencies().add(m.getType());
-				}
-				// 最后添加进创建好的表中
-				nameModelMap.put(name, model);
-				typeModelMap.put(clz, model);
-			}
-			// 添加进TreeMap时，顺序会按照InstanceModel的compareTo规则排序
-			instanceModels.add(model);
+			InstanceModel model = new InstanceModel();
+			model.setName(getNameByClass(clz));
+			model.setType(clz);
+			instanceModelSet.add(model);
 		}
-		return instanceModels;
+	}
+	
+	/**
+	 * 为依赖关系建模
+	 */
+	private TreeSet<InstanceModel> getDependenciesSet() {
+		TreeSet<InstanceModel> modelSet = new TreeSet<InstanceModel>();
+		for (InstanceModel model : instanceModelSet) {
+			Class<?> clz = model.getType();
+			Set<Class<?>> classSet = new HashSet<Class<?>>();
+			classSet.addAll(getDependenciesByConstructor(clz));
+			classSet.addAll(getDependenciesByProperties(clz));
+			classSet.addAll(getDependenciesByField(clz));
+			model.setDependencies(classSet);
+		}
+		return modelSet;
 	}
 	
 	/**
@@ -307,9 +302,9 @@ public class Context {
 	 */
 	private Set<Class<?>> getImplementSet(Class<?> clz) {
 		Set<Class<?>> set = new HashSet<Class<?>>();
-		for (Entry<Class<?>, InstanceModel> e : typeModelMap.entrySet()) {
-			if (clz.isAssignableFrom(e.getKey())) {
-				set.add(e.getKey());
+		for (InstanceModel m : instanceModelSet) {
+			if (clz.isAssignableFrom(m.getType())) {
+				set.add(m.getType());
 			}
 		}
 		return set;
@@ -317,10 +312,10 @@ public class Context {
 	
 	/**
 	 * 按照依赖顺序，进行实例化，同时将具体实例写进InstanceModel中
-	 * @param instanceModelSet
+	 * @param dependenciesSet
 	 */
-	private void newInstanceAndInjectDependencies(TreeSet<InstanceModel> instanceModelSet) {
-		for (InstanceModel model : instanceModelSet) {
+	private void newInstance(TreeSet<InstanceModel> dependenciesSet) {
+		for (InstanceModel model : dependenciesSet) {
 			Class<?> clz = model.getType();
 			Object instance = null;
 			// 首先查看构造器是否有注入注解

@@ -38,9 +38,9 @@ public class InstanceModel implements Comparable<InstanceModel> {
 			if (model.isDependInterface()) {
 				result = -1;
 			} else {
-				if (dependencies.contains(model)) {
+				if (dependencies.contains(model.type)) {
 					result = 1;
-				} else if (model.dependencies.contains(this)) {
+				} else if (model.dependencies.contains(type)) {
 					result = -1;
 				}
 			}
@@ -119,6 +119,12 @@ public class InstanceModel implements Comparable<InstanceModel> {
 
 	public void setDependencies(Set<Class<?>> dependencies) {
 		this.dependencies = dependencies;
+	}
+
+	@Override
+	public String toString() {
+		return "InstanceModel [type=" + type.getSimpleName() + ", name=" + name + ", instance=" + instance + ", dependencies="
+				+ dependencies + "]";
 	}
 
 }
