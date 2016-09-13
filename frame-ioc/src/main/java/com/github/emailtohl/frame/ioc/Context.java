@@ -120,6 +120,7 @@ public class Context {
 	 * @param clz 类型，包括interface接口
 	 * @return 实例对象，如果查找有多个实例对象，则抛运行时异常
 	 */
+	@SuppressWarnings("unused")
 	private InstanceModel getInstanceModel(Class<?> clz) {
 		Map<String, InstanceModel> instanceModelMap = getInstanceModelMapByType(clz);
 		int size = instanceModelMap.size();
@@ -227,13 +228,12 @@ public class Context {
 	private TreeSet<InstanceModel> getDependencies(Set<Class<?>> classSet) {
 		TreeSet<InstanceModel> instanceModels = new TreeSet<InstanceModel>();
 		for (Class<?> clz : classSet) {
-			InstanceModel model;
-			if (clz.isInterface()) {
-				model = getInstanceModel(clz);
-			} else {
+			// 如果是接口，则忽略
+			if (!clz.isInterface()) {
+				continue;
 			}
 			String name = getNameByClass(clz);
-			model = nameModelMap.get(name);
+			InstanceModel model = nameModelMap.get(name);
 			// 如果已经被创建过，则继续分析下一个class
 			if (model == null) {
 				model = new InstanceModel();
