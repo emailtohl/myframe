@@ -83,6 +83,27 @@ public class Context {
 	}
 	
 	/**
+	 * 通过类型和实例名查询实例
+	 * @param clz 类型名
+	 * @param name 实例名
+	 * @return 实例，若未查到，则返回null
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T getInstance(Class<T> clz, String name) {
+		Map<String, Object> instanceMap = getInstanceMapByType(clz);
+		return (T) instanceMap.get(name);
+	}
+	
+	/**
+	 * 通过实例名查询实例
+	 * @param name 实例名
+	 * @return 实例，若未查到，则返回null
+	 */
+	public Object getInstance(String name) {
+		return strModelMap.get(name);
+	}
+	
+	/**
 	 * 一个类型下有可能有多个实例，所以返回一个Map，key是实例名，value是实例
 	 * @param clz
 	 * @return
