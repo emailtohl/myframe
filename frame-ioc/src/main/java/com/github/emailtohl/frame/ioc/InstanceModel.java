@@ -4,6 +4,8 @@ import java.util.Set;
 import java.util.TreeSet;
 /**
  * 为实例对象进行建模，为ioc容器提供必要的信息
+ * 只存储可实例化的类，忽略接口、抽象类
+ * 
  * @author Helei
  *
  */
@@ -25,17 +27,30 @@ public class InstanceModel implements Comparable<InstanceModel> {
 	 */
 	private Set<InstanceModel> dependencies = new TreeSet<InstanceModel>();
 	/**
+	 * 该类是否依赖于接口，若是，则应该最后才实例化
+	 */
+	private boolean isDependInterface = false;
+	
+	/**
 	 * 为了在TreeMap中排序
 	 */
 	@Override
 	public int compareTo(InstanceModel o) {
 		int result = 0;
-		if (o instanceof InstanceModel) {
-			InstanceModel model = (InstanceModel) o;
-			if (dependencies.contains(model)) {
-				result = 1;
-			} else if (model.dependencies.contains(this)) {
-				result = -1;
+		if (isDependInterface) {// 如果被注入的是接口，则等其他实例化完了之后再创建
+			result = 1;
+		} else {
+			if (o instanceof InstanceModel) {
+				InstanceModel model = (InstanceModel) o;
+				if (model.isDependInterface()) {
+					result = -1;
+				} else {
+					if (dependencies.contains(model)) {
+						result = 1;
+					} else if (model.dependencies.contains(this)) {
+						result = -1;
+					}
+				}
 			}
 		}
 		return result;
@@ -99,6 +114,14 @@ public class InstanceModel implements Comparable<InstanceModel> {
 
 	public void setDependencies(Set<InstanceModel> dependencies) {
 		this.dependencies = dependencies;
+	}
+
+	public boolean isDependInterface() {
+		return isDependInterface;
+	}
+
+	public void setDependInterface(boolean isDependInterface) {
+		this.isDependInterface = isDependInterface;
 	}
 
 }

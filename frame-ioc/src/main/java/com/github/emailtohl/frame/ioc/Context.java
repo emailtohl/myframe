@@ -231,7 +231,7 @@ public class Context {
 		TreeSet<InstanceModel> instanceModels = new TreeSet<InstanceModel>();
 		for (Class<?> clz : classSet) {
 			// 如果是接口，则忽略
-			if (!clz.isInterface()) {
+			if (clz.isInterface() || clz.isEnum() || clz.isAnonymousClass() || clz.isSynthetic()) {
 				continue;
 			}
 			String name = getNameByClass(clz);
