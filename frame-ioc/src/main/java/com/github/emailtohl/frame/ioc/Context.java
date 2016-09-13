@@ -11,15 +11,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.springframework.stereotype.Component;
 
 import com.github.emailtohl.frame.util.BeanTools;
 import com.github.emailtohl.frame.util.PackageScanner;
@@ -212,7 +214,7 @@ public class Context {
 		if (c == null) {
 			return "";
 		}
-		String name = c.name();
+		String name = c.value();
 		if (name.isEmpty()) {
 			name = clz.getSimpleName();
 			name = name.substring(0, 1).toLowerCase() + name.substring(1);

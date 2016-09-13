@@ -3,14 +3,15 @@ package com.github.emailtohl.frame.ioc.testsite.dao;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.github.emailtohl.frame.ioc.Component;
+import org.springframework.stereotype.Component;
+
 import com.github.emailtohl.frame.ioc.testsite.util.SomeOneUtil;
 
 /**
  * JavaBean属性注入
  * @author HeLei
  */
-@Component(name = "baseRepository")
+@Component("baseRepository")
 public abstract class BaseDao {
 	SomeOneUtil util;
 	

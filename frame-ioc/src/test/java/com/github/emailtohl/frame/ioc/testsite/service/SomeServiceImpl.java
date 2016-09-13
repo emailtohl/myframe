@@ -3,7 +3,8 @@ package com.github.emailtohl.frame.ioc.testsite.service;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.github.emailtohl.frame.ioc.Component;
+import org.springframework.stereotype.Component;
+
 import com.github.emailtohl.frame.ioc.testsite.dao.SomeDao;
 
 @Component
