@@ -2,7 +2,11 @@ package com.github.emailtohl.frame.ioc;
 
 import java.util.Set;
 import java.util.TreeSet;
-
+/**
+ * 为实例对象进行建模，为ioc容器提供必要的信息
+ * @author Helei
+ *
+ */
 public class InstanceModel implements Comparable<InstanceModel> {
 	/**
 	 * 实例的类型

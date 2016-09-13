@@ -23,12 +23,31 @@ import javax.inject.Named;
 
 import com.github.emailtohl.frame.util.BeanTools;
 import com.github.emailtohl.frame.util.PackageScanner;
-
+/**
+ * ioc的容器，仿造如Spring一样，可以通过name（id）获取实例，也可以通过类型获取实例
+ * 实现依赖注入功能
+ * 
+ * @author Helei
+ *
+ */
 public class Context {
 	private static final Logger logger = LogManager.getLogManager().getLogger(BeanTools.class.getName());
-	private Map<String, InstanceModel> modelMap = new HashMap<String, InstanceModel>();
-	private Map<String, Object> nameMap = new HashMap<String, Object>();
-	private Map<Class<?>, Object> typeMap = new HashMap<Class<?>, Object>();
+	/**
+	 * 通过name（id）查找实例模型
+	 */
+	private Map<String, InstanceModel> strModelMap = new HashMap<String, InstanceModel>();
+	/**
+	 * 通过class查找实例模型
+	 */
+	private Map<Class<?>, InstanceModel> typeModelMap = new HashMap<Class<?>, InstanceModel>();
+	/**
+	 * 通过那么（id）查找具体实例
+	 */
+	private Map<String, Object> nameInstanceMap = new HashMap<String, Object>();
+	/**
+	 * 通过class查找具体实例
+	 */
+	private Map<Class<?>, Object> typeInstanceMap = new HashMap<Class<?>, Object>();
 	
 	public Context(String packagePath) {
 		super();
@@ -39,6 +58,43 @@ public class Context {
 		TreeSet<InstanceModel> instanceModelSet = getDependencies(classSet);
 		// 第三步，实例化，依赖注入
 		newInstanceAndInjectDependencies(instanceModelSet);
+	}
+	
+	/**
+	 * 通过类型查询实例对象
+	 * 
+	 * @param clz 类型，包括interface接口
+	 * @return 实例对象，如果查找有多个实例对象，则抛运行时异常
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T getInstance(Class<T> clz) {
+		Map<String, Object> instanceMap = getInstanceMapByType(clz);
+		int size = instanceMap.size();
+		if (size == 0) {
+			return null;
+		} else if (size > 1) {
+			throw new RuntimeException("有多个实例满足该类型：" + instanceMap);
+		}
+		T instance = null;
+		for (Entry<String, Object> e : instanceMap.entrySet()) {
+			instance = (T) e.getValue();
+		}
+		return instance;
+	}
+	
+	/**
+	 * 一个类型下有可能有多个实例，所以返回一个Map，key是实例名，value是实例
+	 * @param clz
+	 * @return
+	 */
+	private Map<String, Object> getInstanceMapByType(Class<?> clz) {
+		Map<String, Object> instanceMap = new HashMap<String, Object>();
+		for (Entry<Class<?>, InstanceModel> e : typeModelMap.entrySet()) {
+			if (clz.isAssignableFrom(e.getKey())) {
+				instanceMap.put(e.getValue().getName(), e.getValue().getInstance());
+			}
+		}
+		return instanceMap;
 	}
 	
 	/**
@@ -56,6 +112,7 @@ public class Context {
 	
 	/**
 	 * 通过注解的类名获取实例的name（id）
+	 * 若不存在，则返回空字符串
 	 * @param clz
 	 * @return
 	 */
@@ -74,13 +131,14 @@ public class Context {
 	
 	/**
 	 * 对依赖关系进行建模
-	 * @param classSet
+	 * 同时将实例模型维护到相应查询Map中
+	 * @param classSet 扫描出来，带有Component注解的Class集合
 	 */
 	private TreeSet<InstanceModel> getDependencies(Set<Class<?>> classSet) {
 		TreeSet<InstanceModel> instanceModels = new TreeSet<InstanceModel>();
 		for (Class<?> clz : classSet) {
 			String name = getNameByClass(clz);
-			InstanceModel model = modelMap.get(name);
+			InstanceModel model = strModelMap.get(name);
 			// 如果已经被创建过，则继续分析下一个class
 			if (model == null) {
 				model = new InstanceModel();
@@ -94,7 +152,8 @@ public class Context {
 				TreeSet<InstanceModel> ts = getDependencies(dependencyClassSet);
 				model.setDependencies(ts);
 				// 最后添加进创建好的表中
-				modelMap.put(name, model);
+				strModelMap.put(name, model);
+				typeModelMap.put(clz, model);
 			}
 			// 添加进TreeMap时，顺序会按照InstanceModel的compareTo规则排序
 			instanceModels.add(model);
@@ -147,18 +206,6 @@ public class Context {
 	}
 	
 	/**
-	 * 当通过类型无法获取到实例时，查看是否有其子类存在于容器中
-	 */
-	private Object getInstanceFromSubType(Class<?> clz) {
-		for (Entry<Class<?>, Object> e : typeMap.entrySet()) {
-			if (clz.isAssignableFrom(e.getKey())) {
-				return e.getValue();
-			}
-		}
-		return null;
-	}
-	
-	/**
 	 * 按照依赖顺序，进行实例化，同时设置typeMap和nameMap两种数据结构
 	 * @param instanceModelSet
 	 */
@@ -182,8 +229,8 @@ public class Context {
 			injectProperty(clz, instance);
 			// 最后在Field字段中注入
 			injectField(instance);
-			nameMap.put(getNameByClass(clz), instance);
-			typeMap.put(clz, instance);
+			nameInstanceMap.put(getNameByClass(clz), instance);
+			typeInstanceMap.put(clz, instance);
 		}
 	}
 	
@@ -205,12 +252,12 @@ public class Context {
 				Object injectObj = null;
 				String name = getNameByClass(pt);
 				if (name.isEmpty()) {// 如果注明了name（id），则通过name获取
-					injectObj = nameMap.get(name);
+					injectObj = nameInstanceMap.get(name);
 				} else {
-					injectObj = typeMap.get(pt);
+					injectObj = typeInstanceMap.get(pt);
 				}
 				if (injectObj == null) {
-					injectObj = getInstanceFromSubType(pt);
+					injectObj = getInstance(pt);
 				}
 				if (injectObj == null) {
 					throw new RuntimeException("未找到Bean实例");
@@ -253,12 +300,12 @@ public class Context {
 				}
 				Object injectObj = null;
 				if (name.isEmpty()) {// 如果注明了name（id），则通过name获取
-					injectObj = nameMap.get(name);
+					injectObj = nameInstanceMap.get(name);
 				} else {
-					injectObj = typeMap.get(p.getPropertyType());
+					injectObj = typeInstanceMap.get(p.getPropertyType());
 				}
 				if (injectObj == null) {
-					injectObj = getInstanceFromSubType(p.getPropertyType());
+					injectObj = getInstance(p.getPropertyType());
 				}
 				if (injectObj == null) {
 					throw new RuntimeException("未找到Bean实例");
@@ -291,9 +338,9 @@ public class Context {
 			}
 			Object param = null;
 			if (name.isEmpty()) {// 如果注明了name（id），则通过name获取
-				param = nameMap.get(name);
+				param = nameInstanceMap.get(name);
 			} else {
-				param = typeMap.get(f.getType());
+				param = typeInstanceMap.get(f.getType());
 			}
 			if (param == null) {
 				throw new RuntimeException("没有找到Bean实例");
