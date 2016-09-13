@@ -206,7 +206,7 @@ public class Context {
 	}
 	
 	/**
-	 * 按照依赖顺序，进行实例化，同时设置typeMap和nameMap两种数据结构
+	 * 按照依赖顺序，进行实例化，同时设置nameInstanceMap和typeInstanceMap两种数据结构
 	 * @param instanceModelSet
 	 */
 	private void newInstanceAndInjectDependencies(TreeSet<InstanceModel> instanceModelSet) {
@@ -222,7 +222,7 @@ public class Context {
 				} catch (InstantiationException | IllegalAccessException e1) {
 					e1.printStackTrace();
 					logger.log(Level.SEVERE, "默认构造器创建实例时发生异常，需提供无惨的默认构造器", e1);
-					throw new IllegalArgumentException();
+					throw new RuntimeException();
 				}
 			}
 			// 创建好实例后，先调用JavaBean的setter方法注入实例
@@ -266,8 +266,7 @@ public class Context {
 			}
 			try {
 				instance = constructor.newInstance(initargs);
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException e1) {
+			} catch (InstantiationException | IllegalAccessException | InvocationTargetException e1) {
 				e1.printStackTrace();
 				logger.log(Level.SEVERE, "构造器创建实例时发生异常", e1);
 			}
@@ -312,7 +311,7 @@ public class Context {
 				}
 				m.invoke(instance, injectObj);
 			}
-		} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
+		} catch (IntrospectionException | IllegalAccessException | InvocationTargetException e1) {
 			e1.printStackTrace();
 			logger.log(Level.SEVERE, "访问JavaBean属性发生异常", e1);
 		}
@@ -347,7 +346,7 @@ public class Context {
 			}
 			try {
 				f.set(instance, param);
-			} catch (IllegalArgumentException | IllegalAccessException e1) {
+			} catch (IllegalAccessException e1) {
 				e1.printStackTrace();
 				logger.log(Level.SEVERE, "访问Field字段发生异常", e1);
 			}
