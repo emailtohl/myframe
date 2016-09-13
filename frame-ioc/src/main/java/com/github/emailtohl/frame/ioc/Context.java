@@ -76,7 +76,8 @@ public class Context {
 		model.setType(clz);
 		// 下面创建依赖列表
 		Set<Class<?>> dependencyClassSet = new HashSet<Class<?>>();
-		dependencyClassSet.addAll(getDependenciesByConstructor(clz));
+//		既然已经实例化了，所以不依赖构造器的参数
+//		dependencyClassSet.addAll(getDependenciesByConstructor(clz));
 		dependencyClassSet.addAll(getDependenciesByProperties(clz));
 		dependencyClassSet.addAll(getDependenciesByField(clz));
 		TreeSet<InstanceModel> ts = getDependencies(dependencyClassSet);
@@ -111,6 +112,27 @@ public class Context {
 			instance = (T) e.getValue();
 		}
 		return instance;
+	}
+	
+	/**
+	 * 通过类型查询实例模型
+	 * 
+	 * @param clz 类型，包括interface接口
+	 * @return 实例对象，如果查找有多个实例对象，则抛运行时异常
+	 */
+	private InstanceModel getInstanceModel(Class<?> clz) {
+		Map<String, InstanceModel> instanceModelMap = getInstanceModelMapByType(clz);
+		int size = instanceModelMap.size();
+		if (size == 0) {
+			return null;
+		} else if (size > 1) {
+			throw new RuntimeException("有多个实例模型满足该类型：" + instanceModelMap);
+		}
+		InstanceModel instanceModel = null;
+		for (Entry<String, InstanceModel> e : instanceModelMap.entrySet()) {
+			instanceModel = e.getValue();
+		}
+		return instanceModel;
 	}
 	
 	/**
@@ -150,12 +172,28 @@ public class Context {
 	}
 	
 	/**
+	 * 一个类型下有可能有多个实例，所以返回一个Map，key是实例名，value是实例模型
+	 * @param clz
+	 * @return
+	 */
+	private Map<String, InstanceModel> getInstanceModelMapByType(Class<?> clz) {
+		Map<String, InstanceModel> instanceModelMap = new HashMap<String, InstanceModel>();
+		for (Entry<Class<?>, InstanceModel> e : typeModelMap.entrySet()) {
+			if (clz.isAssignableFrom(e.getKey())) {
+				instanceModelMap.put(e.getValue().getName(), e.getValue());
+			}
+		}
+		return instanceModelMap;
+	}
+	
+	/**
 	 * 过滤无关的Class
 	 */
 	private void filter(Set<Class<?>> classSet) {
 		Iterator<Class<?>> i = classSet.iterator();
 		while (i.hasNext()) {
-			Component c = i.next().getAnnotation(Component.class);
+			Class<?> clz = i.next();
+			Component c = clz.getAnnotation(Component.class);
 			if (c == null) {
 				i.remove();
 			}
@@ -189,8 +227,13 @@ public class Context {
 	private TreeSet<InstanceModel> getDependencies(Set<Class<?>> classSet) {
 		TreeSet<InstanceModel> instanceModels = new TreeSet<InstanceModel>();
 		for (Class<?> clz : classSet) {
+			InstanceModel model;
+			if (clz.isInterface()) {
+				model = getInstanceModel(clz);
+			} else {
+			}
 			String name = getNameByClass(clz);
-			InstanceModel model = nameModelMap.get(name);
+			model = nameModelMap.get(name);
 			// 如果已经被创建过，则继续分析下一个class
 			if (model == null) {
 				model = new InstanceModel();
@@ -235,13 +278,18 @@ public class Context {
 	 */
 	private Set<Class<?>> getDependenciesByProperties(Class<?> clz) {
 		Set<Class<?>> set = new HashSet<Class<?>>();
-		try {
-			for (PropertyDescriptor p : Introspector.getBeanInfo(clz, Object.class).getPropertyDescriptors()) {
-				set.add(p.getPropertyType());
+		if (!clz.isInterface()) {
+			try {
+				for (PropertyDescriptor p : Introspector.getBeanInfo(clz, Object.class).getPropertyDescriptors()) {
+					Inject inject = p.getWriteMethod().getAnnotation(Inject.class);
+					if (inject != null) {
+						set.add(p.getPropertyType());
+					}
+				}
+			} catch (IntrospectionException e) {
+				e.printStackTrace();
+				logger.log(Level.SEVERE, "分析Bean的Setter方法发生异常，依赖注入可能失败", e);
 			}
-		} catch (IntrospectionException e) {
-			e.printStackTrace();
-			logger.log(Level.SEVERE, "分析Bean的Setter方法发生异常，依赖注入可能失败", e);
 		}
 		return set;
 	}
@@ -251,8 +299,18 @@ public class Context {
 	 */
 	private Set<Class<?>> getDependenciesByField(Class<?> clz) {
 		Set<Class<?>> set = new HashSet<Class<?>>();
-		for (Entry<String, Field> e : BeanTools.getFieldMap(clz).entrySet()) {
-			set.add(e.getValue().getType());
+		if (!clz.isInterface()) {
+			Class<?> clazz = clz;
+			while (clazz != Object.class) {
+				Field[] fields = clazz.getDeclaredFields();
+				for (int i = 0; i < fields.length; i++) {
+					Inject inject = fields[i].getAnnotation(Inject.class);
+					if (inject != null) {
+						set.add(fields[i].getType());
+					}
+				}
+				clazz = clz.getSuperclass();
+			}
 		}
 		return set;
 	}
