@@ -1,6 +1,7 @@
 package com.github.emailtohl.frame.ioc2;
 
-import java.util.TreeSet;
+import java.util.HashSet;
+import java.util.Set;
 /**
  * 为实例对象进行建模，为ioc容器提供必要的信息
  * @author helei
@@ -21,7 +22,7 @@ public class InstanceModel implements Comparable<InstanceModel> {
 	/**
 	 * 依赖列表
 	 */
-	private TreeSet<Class<?>> dependencies = new TreeSet<Class<?>>();
+	private Set<Class<?>> dependencies = new HashSet<Class<?>>();
 	
 	/**
 	 * 为了在TreeMap中排序
@@ -112,11 +113,11 @@ public class InstanceModel implements Comparable<InstanceModel> {
 		this.instance = instance;
 	}
 
-	public TreeSet<Class<?>> getDependencies() {
+	public Set<Class<?>> getDependencies() {
 		return dependencies;
 	}
 
-	public void setDependencies(TreeSet<Class<?>> dependencies) {
+	public void setDependencies(Set<Class<?>> dependencies) {
 		this.dependencies = dependencies;
 	}
 

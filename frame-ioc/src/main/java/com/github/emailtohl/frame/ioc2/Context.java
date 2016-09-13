@@ -184,6 +184,10 @@ public class Context {
 	private TreeSet<InstanceModel> createInstanceModelSet(Set<Class<?>> classSet) {
 		TreeSet<InstanceModel> instanceModels = new TreeSet<InstanceModel>();
 		for (Class<?> clz : classSet) {
+			Component c = clz.getAnnotation(Component.class);
+			if (c == null) {
+				continue;
+			}
 			String name = getNameByClass(clz);
 			InstanceModel model = nameModelMap.get(name);
 			// 如果已经被创建过，则继续分析下一个class
@@ -289,7 +293,7 @@ public class Context {
 						set.add(fields[i].getType());
 					}
 				}
-				clazz = clz.getSuperclass();
+				clazz = clazz.getSuperclass();
 			}
 		}
 		return set;
