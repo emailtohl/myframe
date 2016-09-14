@@ -10,7 +10,7 @@ import com.github.emailtohl.frame.ioc.testsite.service.OtherService;
 import com.github.emailtohl.frame.ioc.testsite.service.SomeService;
 import com.github.emailtohl.frame.ioc2.Context;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)  
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ContextTest {
 
 	Context context;

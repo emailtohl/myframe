@@ -30,16 +30,16 @@ public class InstanceModel implements Comparable<InstanceModel> {
 	@Override
 	public int compareTo(InstanceModel other) {
 		if (this.dependencies.isEmpty()) {
-			return 1;
+			return -1;
 		}
 		if (other.dependencies.isEmpty()) {
-			return -1;
-		}
-		if (this.dependencies.contains(other.type)) {
 			return 1;
 		}
-		if (other.dependencies.contains(this.type)) {
+		if (this.dependencies.contains(other.type)) {
 			return -1;
+		}
+		if (other.dependencies.contains(this.type)) {
+			return 1;
 		}
 		if (this.equals(other)) {
 			return 0;

@@ -46,7 +46,11 @@ public class Context {
 	 * 通过class查找实例模型
 	 */
 	private Map<Class<?>, InstanceModel> typeModelMap = new HashMap<Class<?>, InstanceModel>();
-	
+
+	public Context() {
+		super();
+	}
+
 	public Context(String packagePath) {
 		super();
 		Set<Class<?>> classSet = PackageScanner.getClasses(packagePath);
