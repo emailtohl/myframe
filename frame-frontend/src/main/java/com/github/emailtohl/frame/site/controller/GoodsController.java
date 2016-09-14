@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,15 +29,17 @@ import com.github.emailtohl.frame.util.ServletUtils;
 @Mvc
 public class GoodsController {
 	private static Logger logger = Logger.getLogger(GoodsController.class.getName());
+	@Inject
 	private GoodsService goodsService;// 使用代理可以让业务逻辑层实现对底层dao的事务管理
+	@Inject
 	private SupplierService supplierService;
-
+/*
 	public GoodsController() {
 		super();
 		goodsService = TransitionProxy.getProxy(new GoodsServiceImpl());
 		supplierService = TransitionProxy.getProxy(new SupplierServiceImpl());
 	}
-
+*/
 	/**
 	 * 根目录进来，首先调用本方法返回一个main.jsp页面，该页面中加载js和css，然后由前端调用各种子页面的加载
 	 * 

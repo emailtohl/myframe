@@ -7,7 +7,10 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletRegistration;
 import javax.servlet.annotation.WebListener;
+import javax.sql.DataSource;
 
+import com.github.emailtohl.frame.dao.BaseDao;
+import com.github.emailtohl.frame.ioc.Context;
 import com.github.emailtohl.frame.mvc.DispatcherServlet;
 import com.github.emailtohl.frame.site.filter.CompressionFilter;
 
@@ -28,9 +31,23 @@ public class Boot implements ServletContextListener {
 	 */
 	public void contextInitialized(ServletContextEvent event) {
 		ServletContext servletContext = event.getServletContext();
+		// 创建应用层的容器
+		Context ctx = new Context();
+		servletContext.setAttribute("context", ctx);
+		// 注册数据源到应用层容器中
+		String configFilePath = Thread.currentThread().getContextClassLoader()
+				.getResource("database.properties").getPath().substring(1);
+		DataSource local = BaseDao.getDataSourceByPropertyFile(configFilePath);
+		configFilePath = Thread.currentThread().getContextClassLoader()
+				.getResource("remoteDatabase.properties").getPath().substring(1);
+		DataSource remote = BaseDao.getDataSourceByPropertyFile(configFilePath);
+		ctx.register("local", local);
+		ctx.register("remote", remote);
+		ctx.register("com.github.emailtohl.frame.site");
 		
 		servletContext.getServletRegistration("default").addMapping("/resource/*", "*.css", "*.js", "*.png", "*.gif", "*.jpg");
 		DispatcherServlet dispatcherServlet = new DispatcherServlet("com.github.emailtohl.frame.site.controller", "/WEB-INF/jsp/");
+		dispatcherServlet.setContext(ctx);
 		ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcherServlet", dispatcherServlet);
 		dispatcher.setLoadOnStartup(1);
 		/* 可以上传文件 */

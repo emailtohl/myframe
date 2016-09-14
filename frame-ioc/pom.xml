@@ -32,6 +32,11 @@
 			<artifactId>frame-util</artifactId>
 			<version>3.0.0-RELEASE</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.emailtohl.frame</groupId>
+			<artifactId>frame-dao</artifactId>
+			<version>3.0.0-RELEASE</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

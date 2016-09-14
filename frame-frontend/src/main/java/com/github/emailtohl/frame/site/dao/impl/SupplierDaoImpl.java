@@ -2,6 +2,8 @@ package com.github.emailtohl.frame.site.dao.impl;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.sql.DataSource;
 
 import com.github.emailtohl.frame.dao.BaseDao;
@@ -10,26 +12,21 @@ import com.github.emailtohl.frame.dao.myjdbctemplate.BeanAnnotationRowMapper;
 import com.github.emailtohl.frame.dao.myjdbctemplate.RowMapper;
 import com.github.emailtohl.frame.dao.preparedstatementfactory.SqlAndArgs;
 import com.github.emailtohl.frame.dao.preparedstatementfactory.SqlBuilder;
+import com.github.emailtohl.frame.ioc.Component;
 import com.github.emailtohl.frame.site.dao.SupplierDao;
 import com.github.emailtohl.frame.site.dao.po.SupplierPo;
 import com.github.emailtohl.frame.site.dto.SupplierDto;
+import com.github.emailtohl.frame.transition.Transition;
 
-public final class SupplierDaoImpl extends BaseDao implements SupplierDao {
-	private static SupplierDaoImpl supplierDao;
+@Transition
+@Component
+public class SupplierDaoImpl extends BaseDao implements SupplierDao {
 	private SqlBuilder sqlBuilder = new SqlBuilder();
 
-	private SupplierDaoImpl(DataSource ds) {
+	@Inject
+	@Named("local")
+	public SupplierDaoImpl(DataSource ds) {
 		super(ds);
-	}
-
-	public synchronized static SupplierDaoImpl getSupplierDaoInstance() {
-		if (supplierDao == null) {
-			String configFilePath = Thread.currentThread().getContextClassLoader()
-					.getResource("database.properties").getPath().substring(1);
-			DataSource ds = BaseDao.getDataSourceByPropertyFile(configFilePath);
-			supplierDao = new SupplierDaoImpl(ds);
-		}
-		return supplierDao;
 	}
 
 	@Override

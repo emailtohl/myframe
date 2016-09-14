@@ -6,21 +6,30 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
+
 import com.github.emailtohl.frame.dao.Pager;
+import com.github.emailtohl.frame.ioc.Component;
 import com.github.emailtohl.frame.site.dao.GoodsDao;
-import com.github.emailtohl.frame.site.dao.impl.GoodsDaoImpl;
 import com.github.emailtohl.frame.site.dto.GoodsDto;
 import com.github.emailtohl.frame.site.filter.AuthenticationFilter;
 import com.github.emailtohl.frame.site.service.GoodsService;
 import com.github.emailtohl.frame.util.BeanTools;
 import com.github.emailtohl.frame.util.CommonUtils;
 
+@Component
 public class GoodsServiceImpl implements GoodsService {
-	private GoodsDao goodsDao;
 	private static final Logger logger = Logger.getLogger(GoodsServiceImpl.class.getName());
+	
+	@Inject
+	private GoodsDao goodsDao;
+	
+	public GoodsDao getGoodsDao() {
+		return goodsDao;
+	}
 
-	public GoodsServiceImpl() {
-		goodsDao = GoodsDaoImpl.getGoodsDaoInstance();
+	public void setGoodsDao(GoodsDao goodsDao) {
+		this.goodsDao = goodsDao;
 	}
 
 	@Override

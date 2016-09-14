@@ -6,22 +6,22 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
+
 import com.github.emailtohl.frame.dao.Pager;
+import com.github.emailtohl.frame.ioc.Component;
 import com.github.emailtohl.frame.site.dao.SupplierDao;
-import com.github.emailtohl.frame.site.dao.impl.SupplierDaoImpl;
 import com.github.emailtohl.frame.site.dto.SupplierDto;
 import com.github.emailtohl.frame.site.filter.AuthenticationFilter;
 import com.github.emailtohl.frame.site.service.SupplierService;
 import com.github.emailtohl.frame.util.BeanTools;
 
+@Component
 public class SupplierServiceImpl implements SupplierService {
 	private static final Logger logger = Logger.getLogger(SupplierServiceImpl.class.getName());
+	
+	@Inject
 	private SupplierDao supplierDao;
-
-	public SupplierServiceImpl() {
-		super();
-		supplierDao = SupplierDaoImpl.getSupplierDaoInstance();
-	}
 
 	@Override
 	public List<SupplierDto> querySupplier(SupplierDto supplierDto) {

@@ -2,28 +2,24 @@ package com.github.emailtohl.frame.site.dao.impl;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.sql.DataSource;
 
 import com.github.emailtohl.frame.dao.BaseDao;
+import com.github.emailtohl.frame.ioc.Component;
 import com.github.emailtohl.frame.site.dao.RemoteSupplierDao;
 import com.github.emailtohl.frame.site.dao.po.RemoteSupplierPo;
+import com.github.emailtohl.frame.transition.Transition;
 
-public final class RemoteSupplierDaoImpl extends BaseDao implements RemoteSupplierDao {
-	private static RemoteSupplierDaoImpl remoteDao;
+@Transition
+@Component
+public class RemoteSupplierDaoImpl extends BaseDao implements RemoteSupplierDao {
 
-	static {
-		String configFilePath = Thread.currentThread().getContextClassLoader()
-				.getResource("remoteDatabase.properties").getPath().substring(1);
-		DataSource ds = BaseDao.getDataSourceByPropertyFile(configFilePath);
-		remoteDao = new RemoteSupplierDaoImpl(ds);
-	}
-
-	private RemoteSupplierDaoImpl(DataSource ds) {
+	@Inject
+	@Named("remote")
+	public RemoteSupplierDaoImpl(DataSource ds) {
 		super(ds);
-	}
-
-	public static RemoteSupplierDaoImpl getRemoteSupplierDaoInstance() {
-		return remoteDao;
 	}
 
 	@Override

@@ -21,6 +21,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import com.github.emailtohl.frame.ioc.Context;
 import com.github.emailtohl.frame.site.service.SupplierDataSync;
 import com.github.emailtohl.frame.site.service.impl.SupplierDataSyncImpl;
 import com.github.emailtohl.frame.transition.TransitionProxy;
@@ -32,14 +33,8 @@ import com.github.emailtohl.frame.transition.TransitionProxy;
 @WebListener
 public class DataSyncListenner implements ServletContextListener {
 	private final static Logger logger = Logger.getLogger(DataSyncListenner.class.getName());
-	private final SupplierDataSync supplierDataSyncProxy;
-
-	/**
-	 * Default constructor.
-	 */
-	public DataSyncListenner() {
-		supplierDataSyncProxy = TransitionProxy.getProxy(new SupplierDataSyncImpl());
-	}
+	private Context context;
+	private SupplierDataSync supplierDataSyncProxy;
 
 	/**
 	 * 示例中演示了三种线程启动的方法，其中一条线程以Future返回执行结果
@@ -48,6 +43,8 @@ public class DataSyncListenner implements ServletContextListener {
 	 */
 	public void contextInitialized(ServletContextEvent event) {
 		final ServletContext sc = event.getServletContext();
+		context = (Context) sc.getAttribute("context");
+		supplierDataSyncProxy = TransitionProxy.getProxy(context.getInstance(SupplierDataSyncImpl.class));
 		String dataSyncTimeDelayTime = sc.getInitParameter("DataSyncTimeDelayTime");
 		final long time = Long.parseLong(dataSyncTimeDelayTime);
 

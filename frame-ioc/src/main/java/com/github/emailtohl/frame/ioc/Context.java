@@ -21,6 +21,8 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.github.emailtohl.frame.transition.Transition;
+import com.github.emailtohl.frame.transition.TransitionProxy;
 import com.github.emailtohl.frame.util.BeanTools;
 import com.github.emailtohl.frame.util.PackageScanner;
 
@@ -379,6 +381,7 @@ public class Context {
 					throw new RuntimeException();
 				}
 			}
+			instance = checkProxy(instance);
 			// 创建好实例后，先调用JavaBean的setter方法注入实例
 			injectProperty(instance);
 			// 最后在Field字段中注入
@@ -486,5 +489,18 @@ public class Context {
 		}
 	}
 	
-
+	/**
+	 * 若有需要返回代理的功能，在此处检查
+	 * @param clz
+	 * @return
+	 */
+	private Object checkProxy(Object instance) {
+		Class<?> clz = instance.getClass();
+		Transition t = clz.getAnnotation(Transition.class);
+		if (t != null) {
+			return TransitionProxy.getProxy(instance);
+		} else {
+			return instance;
+		}
+	}
 }

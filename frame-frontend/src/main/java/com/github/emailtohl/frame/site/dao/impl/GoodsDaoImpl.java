@@ -3,6 +3,8 @@ package com.github.emailtohl.frame.site.dao.impl;
 import java.sql.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.sql.DataSource;
 
 import com.github.emailtohl.frame.dao.BaseDao;
@@ -10,12 +12,15 @@ import com.github.emailtohl.frame.dao.Pager;
 import com.github.emailtohl.frame.dao.myjdbctemplate.BeanAnnotationRowMapper;
 import com.github.emailtohl.frame.dao.myjdbctemplate.RowMapper;
 import com.github.emailtohl.frame.dao.preparedstatementfactory.SqlAndArgs;
+import com.github.emailtohl.frame.ioc.Component;
 import com.github.emailtohl.frame.site.dao.GoodsDao;
 import com.github.emailtohl.frame.site.dto.GoodsDto;
+import com.github.emailtohl.frame.transition.Transition;
 import com.github.emailtohl.frame.util.CommonUtils;
 
-public final class GoodsDaoImpl extends BaseDao implements GoodsDao {
-	private static GoodsDaoImpl goodsDao;
+@Transition
+@Component
+public class GoodsDaoImpl extends BaseDao implements GoodsDao {
 	private static final String SELECT;
 
 	static {
@@ -24,19 +29,11 @@ public final class GoodsDaoImpl extends BaseDao implements GoodsDao {
 				.append("INNER JOIN t_supplier ON t_goods.supplier_id = t_supplier.id ");
 		SELECT = sql.toString();
 	}
-
-	private GoodsDaoImpl(DataSource ds) {
-		super(ds);
-	}
-
-	public synchronized static GoodsDaoImpl getGoodsDaoInstance() {
-		if (goodsDao == null) {
-			String configFilePath = Thread.currentThread().getContextClassLoader()
-					.getResource("database.properties").getPath().substring(1);
-			DataSource ds = BaseDao.getDataSourceByPropertyFile(configFilePath);
-			goodsDao = new GoodsDaoImpl(ds);
-		}
-		return goodsDao;
+	
+	@Inject
+	@Named("local")
+	public GoodsDaoImpl(DataSource dataSource) {
+		super(dataSource);
 	}
 
 	@Override

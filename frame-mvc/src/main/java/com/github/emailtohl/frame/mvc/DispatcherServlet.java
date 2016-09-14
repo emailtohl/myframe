@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.github.emailtohl.frame.ioc.Context;
 import com.github.emailtohl.frame.util.BeanTools;
 import com.github.emailtohl.frame.util.Serializing;
 
@@ -47,6 +48,7 @@ import com.github.emailtohl.frame.util.Serializing;
 public class DispatcherServlet extends HttpServlet {
 	private static final long serialVersionUID = -4212357389547896819L;
 	private static Logger logger = Logger.getLogger(DispatcherServlet.class.getName());
+	private Context context;
 	private Serializing serializing = new Serializing();
 	private String controllerPack;
 	private Map<String, ClassAndMethodBean> actionHandleMap;
@@ -61,6 +63,14 @@ public class DispatcherServlet extends HttpServlet {
 		this.controllerPack = controllerPack;
 		this.viewPrefix = viewPrefix;
 	}
+	
+	public Context getContext() {
+		return context;
+	}
+
+	public void setContext(Context context) {
+		this.context = context;
+	}
 
 	/**
 	 * init(ServletConfig config)是被容器调用的方法，执行顺序是在servlet被构造后
@@ -74,6 +84,13 @@ public class DispatcherServlet extends HttpServlet {
 		}
 		try {
 			actionHandleMap = new MvcParser().getActionHandleMap(controllerPack);
+			if (context != null) {
+				for (ClassAndMethodBean cb : actionHandleMap.values()) {
+					String name = cb.getClazz().getName();
+					Object instance = cb.getController();
+					context.register(name, instance);
+				}
+			}
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw new ServletException("控制器不能实例化，检查是否有无参构造器");
 		}
