@@ -36,10 +36,10 @@ public class InstanceModel implements Comparable<InstanceModel> {
 			return 1;
 		}
 		if (this.dependencies.contains(other.type)) {
-			return -1;
+			return 1;
 		}
 		if (other.dependencies.contains(this.type)) {
-			return 1;
+			return -1;
 		}
 		if (this.equals(other)) {
 			return 0;

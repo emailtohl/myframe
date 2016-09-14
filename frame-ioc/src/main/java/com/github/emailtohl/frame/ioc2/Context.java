@@ -59,7 +59,7 @@ public class Context {
 		// 第二步，为每个被Component注解的Class创建InstanceModel
 		addInstanceModelSet(classSet);
 		// 第三步，对依赖关系进行建模
-		TreeSet<InstanceModel> dependenciesSet = getDependenciesSet();
+		TreeSet<InstanceModel> dependenciesSet = getTreeSet();
 		// 第四步，实例化，依赖注入
 		newInstance(dependenciesSet);
 	}
@@ -84,7 +84,7 @@ public class Context {
 //		classSet.addAll(getDependenciesByConstructor(clz));
 		classSet.addAll(getDependenciesByProperties(clz));
 		classSet.addAll(getDependenciesByField(clz));
-		Set<Class<?>> actualDependencies = getActualDependencies(classSet);
+		Set<Class<?>> actualDependencies = concrete(classSet);
 		model.getDependencies().addAll(actualDependencies);
 		instanceModelSet.add(model);
 		// 为该实例执行依赖注入
@@ -216,22 +216,37 @@ public class Context {
 	/**
 	 * 为依赖关系建模，并得到一个按依赖关系排序的集合
 	 */
-	private TreeSet<InstanceModel> getDependenciesSet() {
+	private TreeSet<InstanceModel> getTreeSet() {
 		TreeSet<InstanceModel> modelSet = new TreeSet<InstanceModel>();
 		for (InstanceModel model : instanceModelSet) {
-			Class<?> clz = model.getType();
-			Set<Class<?>> classSet = new HashSet<Class<?>>();
-			// 从构造器查找依赖
-			classSet.addAll(getDependenciesByConstructor(clz));
-			// 从JavaBean属性查找依赖
-			classSet.addAll(getDependenciesByProperties(clz));
-			// 从Field字段查找依赖
-			classSet.addAll(getDependenciesByField(clz));
-			Set<Class<?>> actualDependencies = getActualDependencies(classSet);
-			model.getDependencies().addAll(actualDependencies);
+			Set<Class<?>> dependencies = getDependencies(model.getType());
+			model.getDependencies().addAll(dependencies);
 			modelSet.add(model);
 		}
 		return modelSet;
+	}
+	
+	/**
+	 * 从具体类class中查找其依赖关系
+	 * 注意：需要递归查找出依赖的传递关系
+	 * @param clz
+	 * @return
+	 */
+	private Set<Class<?>> getDependencies(Class<?> clz) {
+		Set<Class<?>> dependencies = new HashSet<Class<?>>();
+		// 从构造器查找依赖
+		dependencies.addAll(getDependenciesByConstructor(clz));
+		// 从JavaBean属性查找依赖
+		dependencies.addAll(getDependenciesByProperties(clz));
+		// 从Field字段查找依赖
+		dependencies.addAll(getDependenciesByField(clz));
+		// 过滤掉接口，获取对具体类的依赖
+		Set<Class<?>> concrete = concrete(dependencies);
+		dependencies.addAll(concrete);
+		for (Class<?> c : concrete) {
+			dependencies.addAll(getDependencies(c));
+		}
+		return dependencies;
 	}
 	
 	/**
@@ -312,18 +327,21 @@ public class Context {
 	}
 	
 	/**
-	 * 当某个class依赖接口时，需要继续查找实际的类的依赖关系
+	 * 当某个class依赖接口时，需要继续查找依赖的具体类
+	 * 
+	 * @param dependencies 某个类所依赖的Class集合，该集合包括接口、抽象类等
+	 * @return 具体的依赖关系
 	 */
-	private Set<Class<?>> getActualDependencies(Set<Class<?>> set) {
-		Set<Class<?>> s = new HashSet<Class<?>>();
-		for (Class<?> c : set) {
+	private Set<Class<?>> concrete(Set<Class<?>> dependencies) {
+		Set<Class<?>> concrete = new HashSet<Class<?>>();
+		for (Class<?> c : dependencies) {
 			if (typeModelMap.containsKey(c)) {
-				s.add(c);
-			} else {
-				s.addAll(getDerivedClassSet(c));
+				concrete.add(c);
+			} else {// 如果不存在，则可能是接口，这就需要在容器中查询哪些class是该接口的实现类
+				concrete.addAll(getDerivedClassSet(c));
 			}
 		}
-		return s;
+		return concrete;
 	}
 	
 	/**
