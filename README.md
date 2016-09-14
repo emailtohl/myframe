@@ -180,7 +180,7 @@ com.github.emailtohl.frame.ioc.InstanceModel是容器管理Bean所建立的模�
 com.github.emailtohl.frame.ioc.Context 即容器类，它可以在调用构造器public Context(String packagePath)时，将指定包目录下所有注解了Component的类单例话，并根据javax.inject.Inject在构造器、Setter方法或Field字段上的注解，提供依赖注入功能。
 
 当然用户也可以先调用无参构造器，然后再注册Bean对象，如下两种方式：
-```
+```java
 Context c = new Context();
 
 c.register("com.github.emailtohl.frame.ioc.testsite");
@@ -190,14 +190,16 @@ assertNotNull(c.getInstance("someController"));
 
 或
 
-```
+```java
 - Context c = new Context();
 
 OtherUtil otherUtil = new OtherUtil();
 
 c.register("otherUtil", otherUtil);
+```
 
 使用容器中的Bean和Spring类似，可以通过name（id），也可以通过Bean的Class对象获取，例如获取某接口的实现：
-```
+
+```java
 c.getInstance(SomeService.class);
 ```
