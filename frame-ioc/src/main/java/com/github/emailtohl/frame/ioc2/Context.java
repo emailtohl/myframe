@@ -80,7 +80,8 @@ public class Context {
 //		classSet.addAll(getDependenciesByConstructor(clz));
 		classSet.addAll(getDependenciesByProperties(clz));
 		classSet.addAll(getDependenciesByField(clz));
-		model.getDependencies().addAll(getActualDependencies(classSet));
+		Set<Class<?>> actualDependencies = getActualDependencies(classSet);
+		model.getDependencies().addAll(actualDependencies);
 		instanceModelSet.add(model);
 		// 为该实例执行依赖注入
 		injectProperty(instance);
@@ -199,9 +200,12 @@ public class Context {
 	private void addInstanceModelSet(Set<Class<?>> classSet) {
 		for (Class<?> clz : classSet) {
 			InstanceModel model = new InstanceModel();
-			model.setName(getNameByClass(clz));
+			String name = getNameByClass(clz);
+			model.setName(name);
 			model.setType(clz);
 			instanceModelSet.add(model);
+			nameModelMap.put(name, model);
+			typeModelMap.put(clz, model);
 		}
 	}
 	
@@ -219,7 +223,9 @@ public class Context {
 			classSet.addAll(getDependenciesByProperties(clz));
 			// 从Field字段查找依赖
 			classSet.addAll(getDependenciesByField(clz));
-			model.getDependencies().addAll(getActualDependencies(classSet));
+			Set<Class<?>> actualDependencies = getActualDependencies(classSet);
+			model.getDependencies().addAll(actualDependencies);
+			modelSet.add(model);
 		}
 		return modelSet;
 	}

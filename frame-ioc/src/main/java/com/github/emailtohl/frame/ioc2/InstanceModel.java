@@ -28,24 +28,24 @@ public class InstanceModel implements Comparable<InstanceModel> {
 	 * 为了在TreeMap中排序
 	 */
 	@Override
-	public int compareTo(InstanceModel o) {
-		if (isDependInterface()) {
+	public int compareTo(InstanceModel other) {
+		if (this.dependencies.isEmpty()) {
 			return 1;
 		}
-		int result = 0;
-		if (o instanceof InstanceModel) {
-			InstanceModel model = (InstanceModel) o;
-			if (model.isDependInterface()) {
-				result = -1;
-			} else {
-				if (dependencies.contains(model.type)) {
-					result = 1;
-				} else if (model.dependencies.contains(type)) {
-					result = -1;
-				}
-			}
+		if (other.dependencies.isEmpty()) {
+			return -1;
 		}
-		return result;
+		if (this.dependencies.contains(other.type)) {
+			return 1;
+		}
+		if (other.dependencies.contains(this.type)) {
+			return -1;
+		}
+		if (this.equals(other)) {
+			return 0;
+		} else {
+			return 1;// 互不依赖不能返回0，否则会被TreeMap认为它们是相等的
+		}
 	}
 	
 	@Override
@@ -74,19 +74,6 @@ public class InstanceModel implements Comparable<InstanceModel> {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
-	}
-
-	/**
-	 * 判断是否依赖接口，若是，则需要等具体类实例化完之后，再将实例注入到本类中，所以本类的实例化应该在最后
-	 * @return
-	 */
-	public boolean isDependInterface() {
-		for (Class<?> c : dependencies) {
-			if (c.isInterface()) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public Class<?> getType() {
@@ -123,7 +110,7 @@ public class InstanceModel implements Comparable<InstanceModel> {
 
 	@Override
 	public String toString() {
-		return "InstanceModel [type=" + type.getSimpleName() + ", name=" + name + ", instance=" + instance + ", dependencies="
+		return "InstanceModel [name=" + name + ", type=" + type + ", instance=" + instance + ", dependencies="
 				+ dependencies + "]";
 	}
 
