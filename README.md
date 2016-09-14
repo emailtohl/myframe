@@ -173,7 +173,7 @@ PoAnalyzer先分析PO对象，扫描自定义注解或JPA注解，并将关键�
 当前端访问时，DispatcherServlet根据前端的请求选择调用具体的方法。
 
 # 第六章 frame-ioc
-项目中 com.github.emailtohl.frame.ioc.Component注解防Spring中的同名注解，只是Spring中使用value来定义Bean的name，而本注解使用name来定义。
+项目中 com.github.emailtohl.frame.ioc.Component注解仿Spring中的同名注解，只是Spring中使用value来定义Bean的name，而本注解使用name来定义。
 
 com.github.emailtohl.frame.ioc.InstanceModel是容器管理Bean所建立的模型类。
 
