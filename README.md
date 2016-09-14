@@ -191,7 +191,7 @@ assertNotNull(c.getInstance("someController"));
 或
 
 ```java
-- Context c = new Context();
+Context c = new Context();
 
 OtherUtil otherUtil = new OtherUtil();
 
