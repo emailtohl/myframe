@@ -1,38 +1,42 @@
 package com.github.emailtohl.frame.ioc;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)  
+import com.github.emailtohl.frame.ioc.Context;
+import com.github.emailtohl.frame.ioc.testsite.dao.SomeDao;
+import com.github.emailtohl.frame.ioc.testsite.service.OtherService;
+import com.github.emailtohl.frame.ioc.testsite.service.SomeService;
+import com.github.emailtohl.frame.ioc.testsite.util.OtherUtil;
+import com.github.emailtohl.frame.ioc.testsite.util.SomeOneUtil;
+
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ContextTest {
-	Context ctx;
+
+	static Context context;
 	
 	@Test
 	public void test001Context() {
-		ctx = new Context("com.github.emailtohl.frame.ioc");
+		context = new Context("com.github.emailtohl.frame.ioc");
+		assertNotNull(context.getInstance("someController"));
+		assertNotNull(context.getInstance("someRepository"));
+		assertNotNull(context.getInstance("someOneUtil"));
+		assertNotNull(context.getInstance(SomeService.class));
+		assertNotNull(context.getInstance(OtherService.class));
+		assertNotNull(context.getInstance("someRepository", SomeDao.class));
 	}
 
 	@Test
 	public void test002Register() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void test003GetInstanceClassOfT() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void test004GetInstanceClassOfTString() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void test005GetInstanceString() {
-		fail("Not yet implemented");
+		OtherUtil otherUtil = new OtherUtil();
+		context.register("otherUtil", otherUtil);
+		SomeOneUtil someOneUtil = context.getInstance(OtherUtil.class).getSomeOneUtil();
+		assertNotNull(someOneUtil);
+		assertEquals(context.getInstance("someOneUtil"), someOneUtil);
 	}
 
 }

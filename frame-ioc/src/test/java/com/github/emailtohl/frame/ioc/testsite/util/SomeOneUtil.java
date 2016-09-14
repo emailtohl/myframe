@@ -1,6 +1,6 @@
 package com.github.emailtohl.frame.ioc.testsite.util;
 
-import org.springframework.stereotype.Component;
+import com.github.emailtohl.frame.ioc.Component;
 
 /**
  * 已被注解

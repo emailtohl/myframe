@@ -1,13 +1,10 @@
 package com.github.emailtohl.frame.ioc;
 
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 /**
  * 为实例对象进行建模，为ioc容器提供必要的信息
- * 只存储可实例化的类，忽略接口、抽象类
- * 
- * @author Helei
- *
+ * @author helei
  */
 public class InstanceModel implements Comparable<InstanceModel> {
 	/**
@@ -25,35 +22,30 @@ public class InstanceModel implements Comparable<InstanceModel> {
 	/**
 	 * 依赖列表
 	 */
-	private Set<InstanceModel> dependencies = new TreeSet<InstanceModel>();
-	/**
-	 * 该类是否依赖于接口，若是，则应该最后才实例化
-	 */
-	private boolean isDependInterface = false;
+	private Set<Class<?>> dependencies = new HashSet<Class<?>>();
 	
 	/**
 	 * 为了在TreeMap中排序
 	 */
 	@Override
-	public int compareTo(InstanceModel o) {
-		int result = 0;
-		if (isDependInterface) {// 如果被注入的是接口，则等其他实例化完了之后再创建
-			result = 1;
-		} else {
-			if (o instanceof InstanceModel) {
-				InstanceModel model = (InstanceModel) o;
-				if (model.isDependInterface()) {
-					result = -1;
-				} else {
-					if (dependencies.contains(model)) {
-						result = 1;
-					} else if (model.dependencies.contains(this)) {
-						result = -1;
-					}
-				}
-			}
+	public int compareTo(InstanceModel other) {
+		if (this.dependencies.isEmpty()) {
+			return -1;
 		}
-		return result;
+		if (other.dependencies.isEmpty()) {
+			return 1;
+		}
+		if (this.dependencies.contains(other.type)) {
+			return 1;
+		}
+		if (other.dependencies.contains(this.type)) {
+			return -1;
+		}
+		if (this.equals(other)) {
+			return 0;
+		} else {
+			return 1;// 互不依赖不能返回0，否则会被TreeMap认为它们是相等的
+		}
 	}
 	
 	@Override
@@ -108,20 +100,18 @@ public class InstanceModel implements Comparable<InstanceModel> {
 		this.instance = instance;
 	}
 
-	public Set<InstanceModel> getDependencies() {
+	public Set<Class<?>> getDependencies() {
 		return dependencies;
 	}
 
-	public void setDependencies(Set<InstanceModel> dependencies) {
+	public void setDependencies(Set<Class<?>> dependencies) {
 		this.dependencies = dependencies;
 	}
 
-	public boolean isDependInterface() {
-		return isDependInterface;
-	}
-
-	public void setDependInterface(boolean isDependInterface) {
-		this.isDependInterface = isDependInterface;
+	@Override
+	public String toString() {
+		return "InstanceModel [name=" + name + ", type=" + type + ", instance=" + instance + ", dependencies="
+				+ dependencies + "]";
 	}
 
 }

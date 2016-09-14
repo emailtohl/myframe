@@ -2,8 +2,7 @@ package com.github.emailtohl.frame.ioc.testsite.controller;
 
 import javax.inject.Inject;
 
-import org.springframework.stereotype.Component;
-
+import com.github.emailtohl.frame.ioc.Component;
 import com.github.emailtohl.frame.ioc.testsite.service.OtherService;
 import com.github.emailtohl.frame.ioc.testsite.service.SomeService;
 

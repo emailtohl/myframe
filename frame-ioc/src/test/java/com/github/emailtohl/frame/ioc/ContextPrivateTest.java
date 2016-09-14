@@ -1,4 +1,4 @@
-package com.github.emailtohl.frame.ioc2;
+package com.github.emailtohl.frame.ioc;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -17,6 +17,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.github.emailtohl.frame.ioc.Context;
+import com.github.emailtohl.frame.ioc.InstanceModel;
 import com.github.emailtohl.frame.ioc.testsite.controller.SomeController;
 import com.github.emailtohl.frame.ioc.testsite.dao.SomeDao;
 import com.github.emailtohl.frame.ioc.testsite.service.OtherService;

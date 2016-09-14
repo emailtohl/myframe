@@ -4,10 +4,10 @@
 
 	<groupId>com.github.emailtohl.frame</groupId>
 	<artifactId>frame-ioc</artifactId>
-	<version>2.0.0-RELEASE</version>
+	<version>3.0.0-RELEASE</version>
 	<packaging>jar</packaging>
 
-	<name>frame-context</name>
+	<name>frame-ioc</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -28,48 +28,10 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.1.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>javax.persistence</artifactId>
-			<version>2.1.1</version>
-		</dependency>
-		<dependency>
 			<groupId>com.github.emailtohl.frame</groupId>
 			<artifactId>frame-util</artifactId>
-			<version>2.0.0-RELEASE</version>
+			<version>3.0.0-RELEASE</version>
 		</dependency>
-		<dependency>
-			<groupId>com.github.emailtohl.frame</groupId>
-			<artifactId>frame-dao</artifactId>
-			<version>2.0.0-RELEASE</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>4.3.2.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>4.3.2.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-			<version>4.3.2.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-			<version>4.3.2.RELEASE</version>
-		</dependency>
-		
 	</dependencies>
 	<build>
 		<plugins>
@@ -78,6 +40,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.5.1</version>
 				<configuration>
+					<compilerVersion>1.8</compilerVersion>
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>

@@ -4,7 +4,7 @@
 
 	<groupId>com.github.emailtohl.frame</groupId>
 	<artifactId>frame-mvc</artifactId>
-	<version>2.0.0-RELEASE</version>
+	<version>3.0.0-RELEASE</version>
 	<packaging>jar</packaging>
 
 	<name>frame-mvc</name>
@@ -53,12 +53,17 @@
 		<dependency>
 			<groupId>com.github.emailtohl.frame</groupId>
 			<artifactId>frame-util</artifactId>
-			<version>2.0.0-RELEASE</version>
+			<version>3.0.0-RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.emailtohl.frame</groupId>
 			<artifactId>frame-dao</artifactId>
-			<version>2.0.0-RELEASE</version>
+			<version>3.0.0-RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.emailtohl.frame</groupId>
+			<artifactId>frame-ioc</artifactId>
+			<version>3.0.0-RELEASE</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -68,6 +73,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.5.1</version>
 				<configuration>
+					<compilerVersion>1.8</compilerVersion>
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
