@@ -147,6 +147,7 @@ JSON-->Map或List
 
 ### 3.6 MyExecutor
 实现Executor的执行器接口中**线程池**的功能，可在构造器中传入最大线程数。由于线程中的bug不易跟踪，难以察觉，所以本类主要作为实验性质，学习之用，JDK自身已提供了丰富的实现，如：CachedThreadPool,FixedThreadPool,SingleThreadExecutor，它们才是开发时所选用。
+
 # 第四章 frame-dao
 事实上JavaEE在持久层的规范是JPA，但要实现像Hibernate那样的功能，非常困难，所以本组件主要面向JDBC，并提供基本的SQL分析功能，在继承BaseDao的类中，可以方便使用增、删、改功能：
 - public long insert(Object po); 将po对象插入到数据表中
@@ -161,6 +162,7 @@ JSON-->Map或List
 其中SimpleJdbcTemplate模仿了Spring的JdbcTemplate，而BeanAnnotationRowMapper<T>可以支持SimpleJdbcTemplate的查询功能，并将JDBC返回的ResultSet注入到PO对象中。
 ### 4.3 preparedstatementfactory
 PoAnalyzer先分析PO对象，扫描自定义注解或JPA注解，并将关键信息存入PropertyBean对象中，然后SqlBuilder对PO对象进行分析，生成可使用的SQL语句。
+
 # 第五章 frame-mvc
 实际上在frame-frontend中已经介绍过如何使用本组件提供的MVC功能，这里简单介绍一下组件内部结构。
 
@@ -169,3 +171,26 @@ PoAnalyzer先分析PO对象，扫描自定义注解或JPA注解，并将关键�
 然后将映射关系存入ClassAndMethodBean对象中。
 
 当前端访问时，DispatcherServlet根据前端的请求选择调用具体的方法。
+
+# 第六章 frame-ioc
+项目中 com.github.emailtohl.frame.ioc.Component注解防Spring中的同名注解，只是Spring中使用value来定义Bean的name，而本注解使用name来定义。
+
+com.github.emailtohl.frame.ioc.InstanceModel是容器管理Bean所建立的模型类。
+
+com.github.emailtohl.frame.ioc.Context 即容器类，它可以在调用构造器public Context(String packagePath)时，将指定包目录下所有注解了Component的类单例话，并根据javax.inject.Inject在构造器、Setter方法或Field字段上的注解，提供依赖注入功能。
+
+当然用户也可以先调用无参构造器，然后再注册Bean对象，如下两种方式：
+
+- Context c = new Context();
+c.register("com.github.emailtohl.frame.ioc.testsite");
+assertNotNull(c.getInstance("someController"));
+
+或
+
+- Context c = new Context();
+OtherUtil otherUtil = new OtherUtil();
+c.register("otherUtil", otherUtil);
+
+使用容器中的Bean和Spring类似，可以通过name（id），也可以通过Bean的Class对象获取，例如获取某接口的实现：
+
+c.getInstance(SomeService.class);

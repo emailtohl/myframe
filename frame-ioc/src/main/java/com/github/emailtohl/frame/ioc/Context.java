@@ -64,6 +64,22 @@ public class Context {
 	}
 	
 	/**
+	 * 将包下所有注解了Component的类提取到容器中管理
+	 * @param packagePath 包名
+	 */
+	public synchronized void register(String packagePath) {
+		Set<Class<?>> classSet = PackageScanner.getClasses(packagePath);
+		// 第一步，过滤无关的Class
+		filter(classSet);
+		// 第二步，为每个被Component注解的Class创建InstanceModel
+		addInstanceModelSet(classSet);
+		// 第三步，对依赖关系进行建模
+		TreeSet<InstanceModel> dependenciesSet = getTreeSet();
+		// 第四步，实例化，依赖注入
+		newInstance(dependenciesSet);
+	}
+	
+	/**
 	 * 将实例纳入容器统一管理，所有依赖将被自动注入
 	 * @param name 实例名
 	 * @param instance 实例对象

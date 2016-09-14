@@ -31,12 +31,24 @@ public class ContextTest {
 	}
 
 	@Test
-	public void test002Register() {
+	public void test002RegisterOne() {
 		OtherUtil otherUtil = new OtherUtil();
 		context.register("otherUtil", otherUtil);
 		SomeOneUtil someOneUtil = context.getInstance(OtherUtil.class).getSomeOneUtil();
 		assertNotNull(someOneUtil);
 		assertEquals(context.getInstance("someOneUtil"), someOneUtil);
+	}
+	
+	@Test
+	public void test003RegisterAll() {
+		Context c = new Context();
+		c.register("com.github.emailtohl.frame.ioc.testsite");
+		assertNotNull(c.getInstance("someController"));
+		assertNotNull(c.getInstance("someRepository"));
+		assertNotNull(c.getInstance("someOneUtil"));
+		assertNotNull(c.getInstance(SomeService.class));
+		assertNotNull(c.getInstance(OtherService.class));
+		assertNotNull(c.getInstance("someRepository", SomeDao.class));
 	}
 
 }
