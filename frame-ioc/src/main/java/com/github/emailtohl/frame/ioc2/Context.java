@@ -31,6 +31,7 @@ import com.github.emailtohl.frame.util.PackageScanner;
  * 实现依赖注入功能
  * 
  * @author helei
+ * @date 2016.09.14
  */
 public class Context {
 	private static final Logger logger = LogManager.getLogManager().getLogger(BeanTools.class.getName());
@@ -346,10 +347,10 @@ public class Context {
 	
 	/**
 	 * 按照依赖顺序，进行实例化，同时将具体实例写进InstanceModel中
-	 * @param dependenciesSet
+	 * @param treeSet
 	 */
-	private void newInstance(TreeSet<InstanceModel> dependenciesSet) {
-		for (InstanceModel model : dependenciesSet) {
+	private void newInstance(TreeSet<InstanceModel> treeSet) {
+		for (InstanceModel model : treeSet) {
 			Class<?> clz = model.getType();
 			Object instance = null;
 			// 首先查看构造器是否有注入注解

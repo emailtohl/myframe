@@ -1,18 +1,17 @@
 package com.github.emailtohl.frame.ioc2;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -40,6 +39,10 @@ public class ContextPrivateTest {
 	 * 扫描包下的Class集合
 	 */
 	static Set<Class<?>> classSet;
+	/**
+	 * 具有依赖顺序的InstanceModel集合
+	 */
+	static TreeSet<InstanceModel> treeSet;
 	/**
 	 * 存储所有被Component注解的Class的模型集合
 	 */
@@ -73,7 +76,7 @@ public class ContextPrivateTest {
 		m.setAccessible(true);
 		assertEquals(9, classSet.size());
 		m.invoke(context, classSet);
-		assertEquals(6, classSet.size());
+		assertEquals(5, classSet.size());
 		assertTrue(classSet.contains(SomeController.class));
 		assertFalse(classSet.contains(OtherUtil.class));
 	}
@@ -95,13 +98,13 @@ public class ContextPrivateTest {
 		assertFalse(typeModelMap.containsKey(OtherUtil.class));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void test003GetDependencies() throws Exception {
 		Method m = Context.class.getDeclaredMethod("getTreeSet");
 		m.setAccessible(true);
-		@SuppressWarnings("unchecked")
-		TreeSet<InstanceModel> set = (TreeSet<InstanceModel>) m.invoke(context);
-		for (InstanceModel model : set) {
+		treeSet = (TreeSet<InstanceModel>) m.invoke(context);
+		for (InstanceModel model : treeSet) {
 			System.out.println(model);
 			if (model.getName().equals("someOneUtil")) {
 				assertTrue(model.getDependencies().isEmpty());
@@ -115,6 +118,29 @@ public class ContextPrivateTest {
 				assertTrue(model.getDependencies().contains(SomeDao.class));
 			} else if (model.getName().equals("someRepository")) {
 				assertTrue(model.getDependencies().contains(SomeOneUtil.class));
+			}
+		}
+	}
+	
+	@Test
+	public void test004NewInstance() throws Exception {
+		Method m = Context.class.getDeclaredMethod("newInstance", TreeSet.class);
+		m.setAccessible(true);
+		m.invoke(context, treeSet);
+		for (InstanceModel model : instanceModelSet) {
+			System.out.println(model);
+			assertNotNull(model.getInstance());
+			if (model.getName().equals("someOneUtil")) {
+			} else if (model.getName().equals("someController")) {
+				SomeController someController = (SomeController) model.getInstance();
+				assertNotNull(someController.getSomeService());
+				assertNotNull(someController.getOtherService());
+			} else if (model.getName().equals("someServiceImpl")) {
+				SomeServiceImpl someServiceImpl = (SomeServiceImpl) model.getInstance();
+				assertNotNull(someServiceImpl.getSomeDao());
+			} else if (model.getName().equals("someRepository")) {
+				SomeDao someDao = (SomeDao) model.getInstance();
+				assertNotNull(someDao.getUtil());
 			}
 		}
 	}
