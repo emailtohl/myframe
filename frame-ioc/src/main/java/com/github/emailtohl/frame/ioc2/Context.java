@@ -46,14 +46,14 @@ public class Context {
 	 * 通过class查找实例模型
 	 */
 	private Map<Class<?>, InstanceModel> typeModelMap = new HashMap<Class<?>, InstanceModel>();
-
+	
 	public Context(String packagePath) {
 		super();
 		Set<Class<?>> classSet = PackageScanner.getClasses(packagePath);
 		// 第一步，过滤无关的Class
 		filter(classSet);
 		// 第二步，为每个被Component注解的Class创建InstanceModel
-		initInstanceModelSet(classSet);
+		addInstanceModelSet(classSet);
 		// 第三步，对依赖关系进行建模
 		TreeSet<InstanceModel> dependenciesSet = getDependenciesSet();
 		// 第四步，实例化，依赖注入
@@ -80,7 +80,7 @@ public class Context {
 //		classSet.addAll(getDependenciesByConstructor(clz));
 		classSet.addAll(getDependenciesByProperties(clz));
 		classSet.addAll(getDependenciesByField(clz));
-		model.getDependencies().addAll(classSet);
+		model.getDependencies().addAll(getActualDependencies(classSet));
 		instanceModelSet.add(model);
 		// 为该实例执行依赖注入
 		injectProperty(instance);
@@ -112,18 +112,14 @@ public class Context {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getInstance(Class<T> clz) {
-		Map<String, Object> instanceMap = getInstanceMapByType(clz);
+		Map<String, Object> instanceMap = getInstanceMap(clz);
 		int size = instanceMap.size();
 		if (size == 0) {
 			return null;
 		} else if (size > 1) {
 			throw new RuntimeException("有多个实例满足该类型：" + instanceMap);
 		}
-		T instance = null;
-		for (Entry<String, Object> e : instanceMap.entrySet()) {
-			instance = (T) e.getValue();
-		}
-		return instance;
+		return (T) instanceMap.values().iterator().next();
 	}
 	
 	/**
@@ -135,17 +131,17 @@ public class Context {
 	@SuppressWarnings("unchecked")
 	public <T> T getInstance(String name, Class<T> clz) {
 		Object injectObj = null;
-		if (!name.isEmpty()) {// 如果注明了name（id），则通过name获取
-			InstanceModel m = nameModelMap.get(name);
-			if (m != null) {
-				injectObj = m.getInstance();
-			}
-		} else {
+		if (name.isEmpty()) {// 如果未注明了name（id），则通过类型来获取
 			InstanceModel m = typeModelMap.get(clz);
 			if (m != null) {
 				injectObj = m.getInstance();
-			} else {
+			} else {// 如果类型获取不到，则扫描容器查找子类
 				injectObj = getInstance(clz);
+			}
+		} else {
+			InstanceModel m = nameModelMap.get(name);
+			if (m != null) {
+				injectObj = m.getInstance();
 			}
 		}
 		return (T) injectObj;
@@ -156,7 +152,7 @@ public class Context {
 	 * @param clz
 	 * @return
 	 */
-	private Map<String, Object> getInstanceMapByType(Class<?> clz) {
+	private Map<String, Object> getInstanceMap(Class<?> clz) {
 		Map<String, Object> instanceMap = new HashMap<String, Object>();
 		for (Entry<Class<?>, InstanceModel> e : typeModelMap.entrySet()) {
 			if (clz.isAssignableFrom(e.getKey())) {
@@ -164,6 +160,21 @@ public class Context {
 			}
 		}
 		return instanceMap;
+	}
+	
+	/**
+	 * 查找某接口或超类下的实现类集合
+	 * @param clz 接口的class
+	 * @return 实现类的集合
+	 */
+	private Set<Class<?>> getDerivedClassSet(Class<?> clz) {
+		Set<Class<?>> set = new HashSet<Class<?>>();
+		for (InstanceModel m : instanceModelSet) {
+			if (clz.isAssignableFrom(m.getType())) {
+				set.add(m.getType());
+			}
+		}
+		return set;
 	}
 	
 	/**
@@ -181,10 +192,11 @@ public class Context {
 	}
 	
 	/**
-	 * 初始化InstanceModel集合
-	 * @param classSet 扫描出来，带有Component注解的Class集合
+	 * 添加InstanceModel集合
+	 * 此时，只将实例名和class写入该模型中
+	 * @param classSet 带有Component注解的Class集合
 	 */
-	private void initInstanceModelSet(Set<Class<?>> classSet) {
+	private void addInstanceModelSet(Set<Class<?>> classSet) {
 		for (Class<?> clz : classSet) {
 			InstanceModel model = new InstanceModel();
 			model.setName(getNameByClass(clz));
@@ -194,17 +206,20 @@ public class Context {
 	}
 	
 	/**
-	 * 为依赖关系建模
+	 * 为依赖关系建模，并得到一个按依赖关系排序的集合
 	 */
 	private TreeSet<InstanceModel> getDependenciesSet() {
 		TreeSet<InstanceModel> modelSet = new TreeSet<InstanceModel>();
 		for (InstanceModel model : instanceModelSet) {
 			Class<?> clz = model.getType();
 			Set<Class<?>> classSet = new HashSet<Class<?>>();
+			// 从构造器查找依赖
 			classSet.addAll(getDependenciesByConstructor(clz));
+			// 从JavaBean属性查找依赖
 			classSet.addAll(getDependenciesByProperties(clz));
+			// 从Field字段查找依赖
 			classSet.addAll(getDependenciesByField(clz));
-			model.setDependencies(classSet);
+			model.getDependencies().addAll(getActualDependencies(classSet));
 		}
 		return modelSet;
 	}
@@ -252,20 +267,16 @@ public class Context {
 	 */
 	private Set<Class<?>> getDependenciesByProperties(Class<?> clz) {
 		Set<Class<?>> set = new HashSet<Class<?>>();
-		if (clz.isInterface()) {// 如果是接口，就将其实现类的class添加进集合中
-			set.addAll(getImplementSet(clz));
-		} else {// 否则，查找该类下所有的属性class
-			try {
-				for (PropertyDescriptor p : Introspector.getBeanInfo(clz, Object.class).getPropertyDescriptors()) {
-					Inject inject = p.getWriteMethod().getAnnotation(Inject.class);
-					if (inject != null) {
-						set.add(p.getPropertyType());
-					}
+		try {
+			for (PropertyDescriptor p : Introspector.getBeanInfo(clz, Object.class).getPropertyDescriptors()) {
+				Inject inject = p.getWriteMethod().getAnnotation(Inject.class);
+				if (inject != null) {
+					set.add(p.getPropertyType());
 				}
-			} catch (IntrospectionException e) {
-				e.printStackTrace();
-				logger.log(Level.SEVERE, "分析Bean的Setter方法发生异常，依赖注入可能失败", e);
 			}
+		} catch (IntrospectionException e) {
+			e.printStackTrace();
+			logger.log(Level.SEVERE, "分析Bean的Setter方法发生异常，依赖注入可能失败", e);
 		}
 		return set;
 	}
@@ -276,38 +287,33 @@ public class Context {
 	 */
 	private Set<Class<?>> getDependenciesByField(Class<?> clz) {
 		Set<Class<?>> set = new HashSet<Class<?>>();
-		if (clz.isInterface()) {// 如果是接口，就将其实现类的class添加进集合中
-			set.addAll(getImplementSet(clz));
-		} else {// 否则，查找该类下所有的属性class
-			Class<?> clazz = clz;
-			while (clazz != Object.class) {
-				Field[] fields = clazz.getDeclaredFields();
-				for (int i = 0; i < fields.length; i++) {
-					Inject inject = fields[i].getAnnotation(Inject.class);
-					if (inject != null) {
-						set.add(fields[i].getType());
-					}
+		Class<?> clazz = clz;
+		while (clazz != Object.class) {
+			Field[] fields = clazz.getDeclaredFields();
+			for (int i = 0; i < fields.length; i++) {
+				Inject inject = fields[i].getAnnotation(Inject.class);
+				if (inject != null) {
+					set.add(fields[i].getType());
 				}
-				clazz = clazz.getSuperclass();
 			}
+			clazz = clazz.getSuperclass();
 		}
 		return set;
 	}
 	
-	
 	/**
-	 * 查找某接口下的实现类集合
-	 * @param clz 接口的class
-	 * @return 实现类的集合
+	 * 当某个class依赖接口时，需要继续查找实际的类的依赖关系
 	 */
-	private Set<Class<?>> getImplementSet(Class<?> clz) {
-		Set<Class<?>> set = new HashSet<Class<?>>();
-		for (InstanceModel m : instanceModelSet) {
-			if (clz.isAssignableFrom(m.getType())) {
-				set.add(m.getType());
+	private Set<Class<?>> getActualDependencies(Set<Class<?>> set) {
+		Set<Class<?>> s = new HashSet<Class<?>>();
+		for (Class<?> c : set) {
+			if (typeModelMap.containsKey(c)) {
+				s.add(c);
+			} else {
+				s.addAll(getDerivedClassSet(c));
 			}
 		}
-		return set;
+		return s;
 	}
 	
 	/**
