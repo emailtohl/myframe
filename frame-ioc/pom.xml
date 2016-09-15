@@ -28,6 +28,12 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>javax.transaction-api</artifactId>
+			<version>1.2</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.github.emailtohl.frame</groupId>
 			<artifactId>frame-util</artifactId>
 			<version>3.0.0-RELEASE</version>

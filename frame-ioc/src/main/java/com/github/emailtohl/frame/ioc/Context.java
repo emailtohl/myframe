@@ -3,6 +3,7 @@ package com.github.emailtohl.frame.ioc;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -20,8 +21,8 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.transaction.Transactional;
 
-import com.github.emailtohl.frame.transition.Transition;
 import com.github.emailtohl.frame.transition.TransitionProxy;
 import com.github.emailtohl.frame.util.BeanTools;
 import com.github.emailtohl.frame.util.PackageScanner;
@@ -123,6 +124,10 @@ public class Context {
 		if (m != null) {
 			instance = m.getInstance();
 		}
+		// 若Transactional注解在接口上，这种通过name（id）获取的实例的方式，不会返回代理
+		if (instance != null && instance.getClass().getAnnotation(Transactional.class) != null) {
+			instance = TransitionProxy.getProxy(instance);
+		}
 		return instance;
 	}
 	
@@ -141,7 +146,12 @@ public class Context {
 		} else if (size > 1) {
 			throw new RuntimeException("有多个实例满足该类型：" + instanceMap);
 		}
-		return (T) instanceMap.values().iterator().next();
+		T instance = (T) instanceMap.values().iterator().next();
+		// 若Transactional注解在接口上，则可以返回代理
+		if (clz.getAnnotation(Transactional.class) != null && instance != null) {
+			instance = TransitionProxy.getProxy(instance);
+		}
+		return instance;
 	}
 	
 	/**
@@ -152,21 +162,25 @@ public class Context {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getInstance(String name, Class<T> clz) {
-		Object injectObj = null;
+		Object instance = null;
 		if (name.isEmpty()) {// 如果未注明了name（id），则通过类型来获取
 			InstanceModel m = typeModelMap.get(clz);
 			if (m != null) {
-				injectObj = m.getInstance();
+				instance = m.getInstance();
 			} else {// 如果类型获取不到，则扫描容器查找子类
-				injectObj = getInstance(clz);
+				instance = getInstance(clz);
 			}
 		} else {
 			InstanceModel m = nameModelMap.get(name);
 			if (m != null) {
-				injectObj = m.getInstance();
+				instance = m.getInstance();
 			}
 		}
-		return (T) injectObj;
+		// 若Transactional注解在接口上，则可以返回代理
+		if (clz.getAnnotation(Transactional.class) != null && instance != null) {
+			instance = TransitionProxy.getProxy(instance);
+		}
+		return (T) instance;
 	}
 	
 	/**
@@ -311,9 +325,12 @@ public class Context {
 		Set<Class<?>> set = new HashSet<Class<?>>();
 		try {
 			for (PropertyDescriptor p : Introspector.getBeanInfo(clz, Object.class).getPropertyDescriptors()) {
-				Inject inject = p.getWriteMethod().getAnnotation(Inject.class);
-				if (inject != null) {
-					set.add(p.getPropertyType());
+				Method m = p.getWriteMethod();
+				if (m != null) {
+					Inject inject = p.getWriteMethod().getAnnotation(Inject.class);
+					if (inject != null) {
+						set.add(p.getPropertyType());
+					}
 				}
 			}
 		} catch (IntrospectionException e) {
@@ -367,21 +384,22 @@ public class Context {
 	 */
 	private void newInstance(TreeSet<InstanceModel> treeSet) {
 		for (InstanceModel model : treeSet) {
-			Class<?> clz = model.getType();
-			Object instance = null;
-			// 首先查看构造器是否有注入注解
-			instance = newInstanceByConstructor(clz);
-			// 如果不是构造器创建的实例，那么就直接new一个出来
-			if (instance == null) {
-				try {
-					instance = clz.newInstance();
-				} catch (InstantiationException | IllegalAccessException e1) {
-					e1.printStackTrace();
-					logger.log(Level.SEVERE, "默认构造器创建实例时发生异常，需提供无惨的默认构造器", e1);
-					throw new RuntimeException();
+			Object instance = model.getInstance();
+			if (instance == null) {// 还有种情况是构造时没有扫描包，先将部分实例注册进容器
+				Class<?> clz = model.getType();
+				// 首先查看构造器是否有注入注解
+				instance = newInstanceByConstructor(clz);
+				// 如果不是构造器创建的实例，那么就直接new一个出来
+				if (instance == null) {
+					try {
+						instance = clz.newInstance();
+					} catch (InstantiationException | IllegalAccessException e1) {
+						e1.printStackTrace();
+						logger.log(Level.SEVERE, "默认构造器创建实例时发生异常，需提供无惨的默认构造器", e1);
+						throw new RuntimeException();
+					}
 				}
 			}
-			instance = checkProxy(instance);
 			// 创建好实例后，先调用JavaBean的setter方法注入实例
 			injectProperty(instance);
 			// 最后在Field字段中注入
@@ -398,20 +416,28 @@ public class Context {
 	 */
 	private Object newInstanceByConstructor(Class<?> clz) {
 		Object instance = null;
-		for (Constructor<?> constructor : clz.getConstructors()) {
+		for (Constructor<?> constructor : clz.getDeclaredConstructors()) {
 			Inject inject = constructor.getAnnotation(Inject.class);
 			if (inject == null) {
 				continue;
 			}
-			Object[] initargs = new Object[constructor.getParameterTypes().length];
+			constructor.setAccessible(true);
+			Object[] initargs = new Object[constructor.getParameterCount()];
+			Annotation[][] as = constructor.getParameterAnnotations();
 			int i = 0;
 			for (Class<?> pt : constructor.getParameterTypes()) {
-				String name = getNameByClass(pt);
+				String name = "";
+				for (Annotation a : as[i]) {
+					if (Named.class.equals(a.annotationType())) {
+						name = ((Named) a).value();
+					}
+				}
 				Object injectObj = getInstance(name, pt);
 				if (injectObj == null) {
 					throw new RuntimeException("未找到Bean实例");
 				}
-				initargs[i++] = injectObj;
+				initargs[i] = injectObj;
+				i++;
 			}
 			try {
 				instance = constructor.newInstance(initargs);
@@ -489,18 +515,4 @@ public class Context {
 		}
 	}
 	
-	/**
-	 * 若有需要返回代理的功能，在此处检查
-	 * @param clz
-	 * @return
-	 */
-	private Object checkProxy(Object instance) {
-		Class<?> clz = instance.getClass();
-		Transition t = clz.getAnnotation(Transition.class);
-		if (t != null) {
-			return TransitionProxy.getProxy(instance);
-		} else {
-			return instance;
-		}
-	}
 }

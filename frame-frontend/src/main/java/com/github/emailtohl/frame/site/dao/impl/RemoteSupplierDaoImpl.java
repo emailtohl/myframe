@@ -10,15 +10,12 @@ import com.github.emailtohl.frame.dao.BaseDao;
 import com.github.emailtohl.frame.ioc.Component;
 import com.github.emailtohl.frame.site.dao.RemoteSupplierDao;
 import com.github.emailtohl.frame.site.dao.po.RemoteSupplierPo;
-import com.github.emailtohl.frame.transition.Transition;
 
-@Transition
 @Component
 public class RemoteSupplierDaoImpl extends BaseDao implements RemoteSupplierDao {
 
 	@Inject
-	@Named("remote")
-	public RemoteSupplierDaoImpl(DataSource ds) {
+	public RemoteSupplierDaoImpl(@Named("remote") DataSource ds) {
 		super(ds);
 	}
 

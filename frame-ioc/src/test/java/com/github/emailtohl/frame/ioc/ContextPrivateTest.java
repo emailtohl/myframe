@@ -12,6 +12,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -146,4 +149,22 @@ public class ContextPrivateTest {
 			}
 		}
 	}
+	
+	/**
+	 * 主要是debug查看构造器的行为
+	 * @throws Exception
+	 */
+	@Test(expected = Exception.class)
+	public void testNewInstanceByConstructor() throws Exception {
+		@Component
+		class TestClass {
+			@Inject
+			public TestClass(@Named("a") int a, @Named("b") long b) {}
+		}
+		
+		Method m = Context.class.getDeclaredMethod("newInstanceByConstructor", Class.class);
+		m.setAccessible(true);
+		m.invoke(context, TestClass.class);
+	}
 }
+

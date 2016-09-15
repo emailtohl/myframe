@@ -10,9 +10,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -85,10 +87,17 @@ public class DispatcherServlet extends HttpServlet {
 		try {
 			actionHandleMap = new MvcParser().getActionHandleMap(controllerPack);
 			if (context != null) {
+				// actionHandleMap因为是url与ClassAndMethodBean的映射，所以可能遇到很多重复的class，注册到容器前，先判断是否之前已经注册过
+				Set<Class<?>> exist = new HashSet<Class<?>>();
 				for (ClassAndMethodBean cb : actionHandleMap.values()) {
-					String name = cb.getClazz().getName();
+					Class<?> controllerClass = cb.getClazz();
+					if (exist.contains(controllerClass)) {
+						continue;
+					}
+					String name = controllerClass.getName();
 					Object instance = cb.getController();
 					context.register(name, instance);
+					exist.add(controllerClass);
 				}
 			}
 		} catch (InstantiationException | IllegalAccessException e) {

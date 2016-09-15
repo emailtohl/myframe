@@ -16,16 +16,13 @@ import com.github.emailtohl.frame.ioc.Component;
 import com.github.emailtohl.frame.site.dao.SupplierDao;
 import com.github.emailtohl.frame.site.dao.po.SupplierPo;
 import com.github.emailtohl.frame.site.dto.SupplierDto;
-import com.github.emailtohl.frame.transition.Transition;
 
-@Transition
 @Component
 public class SupplierDaoImpl extends BaseDao implements SupplierDao {
 	private SqlBuilder sqlBuilder = new SqlBuilder();
 
 	@Inject
-	@Named("local")
-	public SupplierDaoImpl(DataSource ds) {
+	public SupplierDaoImpl(@Named("local") DataSource ds) {
 		super(ds);
 	}
 

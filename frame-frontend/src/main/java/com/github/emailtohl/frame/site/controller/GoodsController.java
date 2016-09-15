@@ -21,9 +21,6 @@ import com.github.emailtohl.frame.site.dto.GoodsDto;
 import com.github.emailtohl.frame.site.dto.SupplierDto;
 import com.github.emailtohl.frame.site.service.GoodsService;
 import com.github.emailtohl.frame.site.service.SupplierService;
-import com.github.emailtohl.frame.site.service.impl.GoodsServiceImpl;
-import com.github.emailtohl.frame.site.service.impl.SupplierServiceImpl;
-import com.github.emailtohl.frame.transition.TransitionProxy;
 import com.github.emailtohl.frame.util.ServletUtils;
 
 @Mvc
