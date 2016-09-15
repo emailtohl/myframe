@@ -44,7 +44,7 @@ frame-frontend作为入口，也是示例的“业务代码”，它使用两个
 本项目并没有在“web.xml”中配置servlet、filter以及listener，而是采用流行的编程风格配置，位于“com.github.emailtohl.frame.site.Boot”类中，最主要的是就是配置frame-mvc模块中的DispatcherServlet，该调度器模仿Spring的同名控制器，在向容器注册时，可这样使用：
 ```java
 DispatcherServlet dispatcherServlet = new DispatcherServlet("com.github.emailtohl.frame.site.controller", "/WEB-INF/jsp/");
-/* 将ioc容器较于mvc管理 */
+/* 将ioc容器交与mvc管理 */
 dispatcherServlet.setContext(ctx);
 ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcherServlet", dispatcherServlet);
 dispatcher.setLoadOnStartup(1);
