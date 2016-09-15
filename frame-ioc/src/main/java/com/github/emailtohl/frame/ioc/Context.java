@@ -32,7 +32,7 @@ import com.github.emailtohl.frame.util.PackageScanner;
  * 实现依赖注入功能
  * 
  * @author helei
- * @date 2016.09.14
+ * @date 2016.09.15 中秋节
  */
 public class Context {
 	private static final Logger logger = LogManager.getLogManager().getLogger(BeanTools.class.getName());
