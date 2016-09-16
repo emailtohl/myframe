@@ -123,7 +123,7 @@ app.define('goods/controller', ['goods/service', 'common/validate', 'goods/add',
 ## 3 frame-util
 该组件提供一些基础功能，下面将简单介绍。
 
-### 3.1 BeanUtils
+### 3.1 BeanTools
 主要是分析对象的字段（以下称：field）或属性（JavaBean规范中的Property），为框架的基础功能。
 - public static Map<String, Object> getFieldMap(Object bean);
 分析对象的field，并以Map形式返回键值对。

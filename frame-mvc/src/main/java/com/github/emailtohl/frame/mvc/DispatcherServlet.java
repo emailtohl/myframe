@@ -94,7 +94,8 @@ public class DispatcherServlet extends HttpServlet {
 					if (exist.contains(controllerClass)) {
 						continue;
 					}
-					String name = controllerClass.getName();
+					String name = controllerClass.getSimpleName();
+					name = name.substring(0, 1).toLowerCase() + name.substring(1);
 					Object instance = cb.getController();
 					context.register(name, instance);
 					exist.add(controllerClass);

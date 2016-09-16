@@ -28,14 +28,14 @@ import com.github.emailtohl.frame.util.BeanTools;
 import com.github.emailtohl.frame.util.PackageScanner;
 
 /**
- * ioc的容器，仿造如Spring一样，可以通过name（id）获取实例，也可以通过类型获取实例
- * 实现依赖注入功能
+ * ioc的容器，模仿Spring，可以通过name（id）获取实例，也可以通过类型获取实例
+ * 实现反转控制和依赖注入功能
  * 
- * @author helei
+ * @author HeLei
  * @date 2016.09.15 中秋节
  */
 public class Context {
-	private static final Logger logger = LogManager.getLogManager().getLogger(BeanTools.class.getName());
+	private static final Logger logger = LogManager.getLogManager().getLogger(Context.class.getName());
 	/**
 	 * 存储所有被Component注解的Class的模型集合
 	 */
@@ -102,8 +102,8 @@ public class Context {
 //		classSet.addAll(getDependenciesByConstructor(clz));
 		classSet.addAll(getDependenciesByProperties(clz));
 		classSet.addAll(getDependenciesByField(clz));
-		Set<Class<?>> actualDependencies = concrete(classSet);
-		model.getDependencies().addAll(actualDependencies);
+		Set<Class<?>> concrete = concrete(classSet);
+		model.getDependencies().addAll(concrete);
 		instanceModelSet.add(model);
 		// 为该实例执行依赖注入
 		injectProperty(instance);
@@ -274,6 +274,7 @@ public class Context {
 		// 过滤掉接口，获取对具体类的依赖
 		Set<Class<?>> concrete = concrete(dependencies);
 		dependencies.addAll(concrete);
+		// 继续寻找依赖的依赖
 		for (Class<?> c : concrete) {
 			dependencies.addAll(getDependencies(c));
 		}
@@ -305,11 +306,12 @@ public class Context {
 	 */
 	private Set<Class<?>> getDependenciesByConstructor(Class<?> clz) {
 		Set<Class<?>> set = new HashSet<Class<?>>();
-		for (Constructor<?> constructor : clz.getConstructors()) {
+		for (Constructor<?> constructor : clz.getDeclaredConstructors()) {
 			Component c = constructor.getAnnotation(Component.class);
 			if (c == null) {
 				continue;
 			}
+			constructor.setAccessible(true);
 			for (Class<?> cl : constructor.getParameterTypes()) {
 				set.add(cl);
 			}
@@ -423,16 +425,16 @@ public class Context {
 			}
 			constructor.setAccessible(true);
 			Object[] initargs = new Object[constructor.getParameterCount()];
-			Annotation[][] as = constructor.getParameterAnnotations();
+			Annotation[][] pas = constructor.getParameterAnnotations();
 			int i = 0;
-			for (Class<?> pt : constructor.getParameterTypes()) {
+			for (Class<?> pts : constructor.getParameterTypes()) {
 				String name = "";
-				for (Annotation a : as[i]) {
+				for (Annotation a : pas[i]) {
 					if (Named.class.equals(a.annotationType())) {
 						name = ((Named) a).value();
 					}
 				}
-				Object injectObj = getInstance(name, pt);
+				Object injectObj = getInstance(name, pts);
 				if (injectObj == null) {
 					throw new RuntimeException("未找到Bean实例");
 				}
