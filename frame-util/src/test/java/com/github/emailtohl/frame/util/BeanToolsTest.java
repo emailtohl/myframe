@@ -4,6 +4,7 @@ import static com.github.emailtohl.frame.util.BeanTools.compareProperties;
 import static com.github.emailtohl.frame.util.BeanTools.copyList;
 import static com.github.emailtohl.frame.util.BeanTools.copyProperties;
 import static com.github.emailtohl.frame.util.BeanTools.deepCopy;
+import static com.github.emailtohl.frame.util.BeanTools.getAnnotation;
 import static com.github.emailtohl.frame.util.BeanTools.getDeclaredField;
 import static com.github.emailtohl.frame.util.BeanTools.getFieldMap;
 import static com.github.emailtohl.frame.util.BeanTools.getFieldNameValueMap;
@@ -33,6 +34,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.persistence.Embedded;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 import org.junit.After;
 import org.junit.Before;
@@ -106,6 +111,15 @@ public class BeanToolsTest {
 		assertTrue(c.isAssignableFrom(List.class));
 	}
 
+	@Test
+	public void testGetAnnotation() throws IntrospectionException {
+		for (PropertyDescriptor p : Introspector.getBeanInfo(User.class, Object.class).getPropertyDescriptors()) {
+			getAnnotation(p, ManyToOne.class);
+			getAnnotation(p, OneToOne.class);
+			getAnnotation(p, Embedded.class);
+		}
+	}
+	
 	@Test
 	public void testCopyProperties() {
 		Person p = copyProperties(bar, Person.class);
