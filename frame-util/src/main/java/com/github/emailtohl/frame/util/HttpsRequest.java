@@ -12,9 +12,11 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
@@ -34,6 +36,10 @@ public class HttpsRequest extends WebAccess {
 	 * 默认的KeyManager[]不做任何检查，不符合安全要求
 	 */
 	private TrustManager[] trustManagers;
+	/**
+	 * host校验
+	 */
+	private HostnameVerifier NoHostnameVerifier = new NoHostnameVerifier();
 
 	public HttpsRequest() {
 		super();
@@ -55,6 +61,7 @@ public class HttpsRequest extends WebAccess {
 		validHttps(httpsUrl);
 		SSLSocketFactory ssf = getSSLSocketFactory();
 		HttpsURLConnection conn = (HttpsURLConnection) getURLConnection(httpsUrl);
+		conn.setHostnameVerifier(NoHostnameVerifier);
 		conn.setSSLSocketFactory(ssf);
 		conn.setRequestMethod("GET");
 		return super.get(conn);
@@ -81,6 +88,7 @@ public class HttpsRequest extends WebAccess {
 		validHttps(httpsUrl);
 		SSLSocketFactory ssf = getSSLSocketFactory();
 		HttpsURLConnection conn = (HttpsURLConnection) getURLConnection(httpsUrl);
+		conn.setHostnameVerifier(NoHostnameVerifier);
 		conn.setSSLSocketFactory(ssf);
 		conn.setRequestMethod("POST");
 		return super.post(conn, requestBody);
@@ -144,6 +152,23 @@ public class HttpsRequest extends WebAccess {
 		}
 	}
 
+	private class NoHostnameVerifier implements HostnameVerifier {
+		/**
+		 * 验证host
+		 * @param hostname
+		 * @param session
+		 * @return
+		 */
+		@Override
+		public boolean verify(String hostname, SSLSession session) {
+			logger.severe("不验证host：");
+			logger.severe("hostname: " + hostname);
+			logger.severe("SSLSession: " + session.toString());
+			return true;
+		}
+		
+	}
+	
 	private class AcceptsUntrustedCerts implements X509TrustManager {
 		/**
 		 * 检查客户端证书
