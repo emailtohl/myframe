@@ -62,7 +62,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.github.emailtohl.frame</groupId>
-			<artifactId>frame-ioc</artifactId>
+			<artifactId>frame-cdi</artifactId>
 			<version>3.0.0-RELEASE</version>
 		</dependency>
 	</dependencies>

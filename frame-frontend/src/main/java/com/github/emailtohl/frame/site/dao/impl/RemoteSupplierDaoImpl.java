@@ -6,8 +6,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
 
+import com.github.emailtohl.frame.cdi.Component;
 import com.github.emailtohl.frame.dao.BaseDao;
-import com.github.emailtohl.frame.ioc.Component;
 import com.github.emailtohl.frame.site.dao.RemoteSupplierDao;
 import com.github.emailtohl.frame.site.dao.po.RemoteSupplierPo;
 

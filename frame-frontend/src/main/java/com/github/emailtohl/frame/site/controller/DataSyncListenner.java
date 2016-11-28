@@ -21,7 +21,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-import com.github.emailtohl.frame.ioc.Context;
+import com.github.emailtohl.frame.cdi.Context;
 import com.github.emailtohl.frame.site.service.SupplierDataSync;
 import com.github.emailtohl.frame.site.service.impl.SupplierDataSyncImpl;
 import com.github.emailtohl.frame.transition.TransitionProxy;

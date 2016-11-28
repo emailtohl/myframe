@@ -9,8 +9,8 @@ import javax.servlet.ServletRegistration;
 import javax.servlet.annotation.WebListener;
 import javax.sql.DataSource;
 
+import com.github.emailtohl.frame.cdi.Context;
 import com.github.emailtohl.frame.dao.BaseDao;
-import com.github.emailtohl.frame.ioc.Context;
 import com.github.emailtohl.frame.mvc.DispatcherServlet;
 import com.github.emailtohl.frame.site.filter.CompressionFilter;
 

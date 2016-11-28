@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import com.github.emailtohl.frame.ioc.Component;
+import com.github.emailtohl.frame.cdi.Component;
 import com.github.emailtohl.frame.site.dao.RemoteSupplierDao;
 import com.github.emailtohl.frame.site.dao.SupplierDao;
 import com.github.emailtohl.frame.site.dao.po.RemoteSupplierPo;

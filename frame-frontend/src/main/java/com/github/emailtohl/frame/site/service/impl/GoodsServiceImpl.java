@@ -8,8 +8,8 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import com.github.emailtohl.frame.cdi.Component;
 import com.github.emailtohl.frame.dao.Pager;
-import com.github.emailtohl.frame.ioc.Component;
 import com.github.emailtohl.frame.site.dao.GoodsDao;
 import com.github.emailtohl.frame.site.dto.GoodsDto;
 import com.github.emailtohl.frame.site.filter.AuthenticationFilter;

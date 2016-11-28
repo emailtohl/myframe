@@ -7,14 +7,14 @@
 
 我日常学习和工作所使用的语言是Java，JavaScript，获取知识的主要途径是书本，相关经典书基本上都读过，不过记性不好，忘得快，要将知识活学活用，还得不断实践，所以我通过创建一些代码库来巩固知识体系。
 
-本项目是我锻炼基本编程水平的代码库，实现的功能早已有相关框架或工具所支持，如MVC，IOC，json解析等，这属于“重复造轮子”，在实际项目中更多的还是选用工业标准的第三方软件，事实上我模仿的框架就是Spring，jquery，requirejs，编写它们纯粹是个人提升和自娱自乐。
+本项目是我锻炼基本编程水平的代码库，实现的功能早已有相关框架或工具所支持，如MVC，CDI，json解析等，这属于“重复造轮子”，在实际项目中更多的还是选用工业标准的第三方软件，事实上我模仿的框架就是Spring，jquery，requirejs，编写它们纯粹是个人提升和自娱自乐。
 
 
 本项目按java后台功能划分为5个模块：
 
 -   frame-util ：为其他模块提供基础工具功能，如**解析json**，**对象分析**，HTTP**客户端**，**Class扫描**等；
 
--   frame-ioc ：如同spring容器那样，实现了**反转控制**和**依赖注入**功能，作为应用程序中对象的容器，它可将Bean单例化，并为Bean提供代理，在切面处增强功能，不过目前只支持事务，此外，这样的框架也能很好地解耦模块之间的关系，并让单元测试更为简单；
+-   frame-cdi ：如同spring容器那样，实现了**反转控制**和**依赖注入**功能，作为应用程序中对象的容器，它可将Bean单例化，并为Bean提供代理，在切面处增强功能，不过目前只支持事务，此外，这样的框架也能很好地解耦模块之间的关系，并让单元测试更为简单；
 
 -   frame-dao ：JPA的映射关系太过于复杂，本组件只将注意集中在简单的查询SQL上，它可以分析PO对象，动态地生成SQL语句，然后提交到JDBC接口中，此外，本组件模仿**spring**的**JdbcTemplate**对于JDBC进行简单封装；
 
@@ -22,7 +22,7 @@
 
 -   frame-frontend ：该模块以一个示例项目来整合各个组件，此外，在前端，收集了常用Javascript工具库，并且实现了AMD管理风格，主要模拟**RequireJS**的依赖注入。
 
-经过多次失败尝试后，现在，frame-ioc项目终于实现了反转控制和依赖注入功能，本项目集合已基本具备框架功能，主要目标已经达到，不过反观之Java EE规范，这些特性仍然只是冰山一角。
+经过多次失败尝试后，现在，frame-cdi项目终于实现了反转控制和依赖注入功能，本项目集合已基本具备框架功能，主要目标已经达到，不过反观之Java EE规范，这些特性仍然只是冰山一角。
 
 本项目，除了样式上使用了bootstrap以外，一切基础底层功能均由自己实现，虽自己尽力完善，但毕竟是个人实践项目，并未经过广泛检验。
 
@@ -44,7 +44,7 @@ frame-frontend作为入口，也是示例的“业务代码”，它使用两个
 本项目并没有在“web.xml”中配置servlet、filter以及listener，而是采用流行的编程风格配置，位于“com.github.emailtohl.frame.site.Boot”类中，最主要的是就是配置frame-mvc模块中的DispatcherServlet，该调度器模仿Spring的同名控制器，在向容器注册时，可这样使用：
 ```java
 DispatcherServlet dispatcherServlet = new DispatcherServlet("com.github.emailtohl.frame.site.controller", "/WEB-INF/jsp/");
-/* 将ioc容器交与mvc管理 */
+/* 将cdi容器交与mvc管理 */
 dispatcherServlet.setContext(ctx);
 ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcherServlet", dispatcherServlet);
 dispatcher.setLoadOnStartup(1);
@@ -183,17 +183,17 @@ PoAnalyzer先分析PO对象，扫描自定义注解或JPA注解，并将关键�
 
 当前端访问时，DispatcherServlet根据前端的请求选择调用具体的方法。
 
-# 6 frame-ioc
-项目中 com.github.emailtohl.frame.ioc.Component注解仿Spring中的同名注解，只是Spring中使用value来定义Bean的name，而本注解使用name来定义。
+# 6 frame-cdi
+项目中 com.github.emailtohl.frame.cdi.Component注解仿Spring中的同名注解，只是Spring中使用value来定义Bean的name，而本注解使用name来定义。
 
-com.github.emailtohl.frame.ioc.InstanceModel是容器管理Bean所建立的模型类。
+com.github.emailtohl.frame.cdi.InstanceModel是容器管理Bean所建立的模型类。
 
-com.github.emailtohl.frame.ioc.Context 即容器类，它可以在调用构造器public Context(String packagePath)时，将指定包目录下所有注解了Component的类单例话，并根据javax.inject.Inject在构造器、Setter方法或Field字段上的注解，提供依赖注入功能。
+com.github.emailtohl.frame.cdi.Context 即容器类，它可以在调用构造器public Context(String packagePath)时，将指定包目录下所有注解了Component的类单例话，并根据javax.inject.Inject在构造器、Setter方法或Field字段上的注解，提供依赖注入功能。
 
 当然用户也可以先调用无参构造器，然后再注册Bean对象，如下两种方式：
 ```java
 Context c = new Context();
-c.register("com.github.emailtohl.frame.ioc.testsite");
+c.register("com.github.emailtohl.frame.cdi.testsite");
 assertNotNull(c.getInstance("someController"));
 ```
 
