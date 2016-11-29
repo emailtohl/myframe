@@ -10,6 +10,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.net.ssl.HostnameVerifier;
@@ -133,16 +134,16 @@ public class HttpsRequest extends WebAccess {
 	}
 
 	private SSLSocketFactory getSSLSocketFactory() {
+		SSLSocketFactory ssf = null;
 		try {
 			SSLContext sslContext = SSLContext.getInstance("SSL", "SunJSSE");
 			sslContext.init(keyManagers, trustManagers, new SecureRandom());
 			// 从上述SSLContext对象中得到SSLSocketFactory对象
-			SSLSocketFactory ssf = sslContext.getSocketFactory();
-			return ssf;
+			ssf = sslContext.getSocketFactory();
 		} catch (KeyManagementException | NoSuchAlgorithmException | NoSuchProviderException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
+			logger.log(Level.SEVERE, "不会出现该异常", e);
 		}
+		return ssf;
 	}
 
 	private void validHttps(String url) {
@@ -169,29 +170,44 @@ public class HttpsRequest extends WebAccess {
 		
 	}
 	
+	/**
+	 * 有效的证书需要由权威机构CA签名，CA会用自己的私钥来生成数字签名。这个权威机构CA是可以被客户端完全信任的，客户端浏览器会安装CA的根证书，
+	 * 由CA签名的证书是被CA所信任的，这就构成了信任链，所以客户端可以信任该服务器的证书。
+	 * 
+	 * 客户端与服务器建立ssl连接时，服务器将自身的证书传输给客户端，客户端在验证证书的时候，先看CA的根证书是否在自己的信任根证书列表中。
+	 * 再用CA的根证书提供的公钥来验证服务器证书中的数字签名，如果公钥可以解开签名，证明该证书确实被CA所信任。再看证书是否过期，
+	 * 访问的网站域名与证书绑定的域名是否一致。这些都通过，说明证书可以信任。
+	 * 
+	 * 接下来使用服务器证书里面的公钥进行服务器身份的验证。 客户端生成一个随机数给到服务器。 服务器对随机数进行签名，并回传给到客户端。
+	 * 客户端用服务器证书的公钥对随机数的签名进行验证，若验证通过，则说明对应的服务器确实拥有对应服务器证书的私钥，因此判断服务器的身份正常。否则，
+	 * 则任务服务器身份被伪造。这些都没问题才说明服务器是可信的。
+	 * 
+	 * 接下来客户端会生成会话密钥，使用服务器公钥加密。服务器用自己的私钥解密后，用会话密钥加密数据进行传输。ssl连接就建立了。
+	 * 
+	 */
 	private class AcceptsUntrustedCerts implements X509TrustManager {
 		/**
 		 * 检查客户端证书
 		 */
 		@Override
 		public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-			logger.severe("客户端证书未做校验：");
 			logger.severe(Arrays.deepToString(chain));
 			logger.severe("认证类型：" + authType);
+			logger.severe("客户端证书未做校验");
 		}
 
 		/**
-		 * 检查服务器端证书
+		 * 检查服务器端证书，若是tomcat容器，则对应server.xml <Connector SSLEnabled="true" keystoreFile>标签中keystoreFile属性
 		 */
 		@Override
 		public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-			logger.severe("服务器端证书未做校验：");
 			logger.severe(Arrays.deepToString(chain));
 			logger.severe("认证类型：" + authType);
+			logger.severe("服务器端证书未做校验");
 		}
 
 		/**
-		 * 返回受信任的X509证书数组
+		 * 返回受信任的X509证书数组，若是tomcat容器，则对应server.xml <Connector SSLEnabled="true" truststoreFile>标签中truststoreFile属性
 		 */
 		@Override
 		public X509Certificate[] getAcceptedIssuers() {
