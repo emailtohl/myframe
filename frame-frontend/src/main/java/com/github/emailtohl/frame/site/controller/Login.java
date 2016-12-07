@@ -31,12 +31,14 @@ public class Login extends HttpServlet {
         foo.setEmail("foo@test.com");
         foo.setPassword("123456");
         foo.setRoleId(1);
+        foo.setIcon("resource/images/icon-head-foo.jpg");
         
         bar.setId(2L);
         bar.setName("bar");
         bar.setEmail("bar@test.com");
         bar.setPassword("123456");
         bar.setRoleId(2);
+        bar.setIcon("resource/images/icon-head-bar.jpg");
         
         emailtohl.setId(3L);
         emailtohl.setName("emailtohl");
