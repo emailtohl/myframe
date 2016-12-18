@@ -145,6 +145,8 @@ public final class BeanTools {
 		for (Entry<String, PropertyDescriptor> e : pmap.entrySet()) {
 			try {
 				Method m = e.getValue().getReadMethod();
+				if (m == null)
+					continue;
 				m.setAccessible(true);
 				Object value = m.invoke(javabean, new Object[] {});
 				nvmap.put(e.getKey(), value);
