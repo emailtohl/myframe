@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.emailtohl.frame.mvc.Mvc;
 import com.github.emailtohl.frame.mvc.RequestMethod;
-import com.github.emailtohl.frame.util.ServletUtils;
+import com.github.emailtohl.frame.util.ServletUtil;
 
 @Mvc(action = "file/")
 public class FileHandler {
@@ -21,12 +21,12 @@ public class FileHandler {
 
 	@Mvc(action = "upload")
 	public void upload(HttpServletRequest request, HttpServletResponse response) {
-		ServletUtils.upload(request, response, uploadPath, null);
+		ServletUtil.upload(request, response, uploadPath, null);
 	}
 
 	@Mvc(action = "download", method = RequestMethod.GET)
 	public void download(HttpServletRequest request, HttpServletResponse response) {
-		ServletUtils.download(request, response, downloadPath);
+		ServletUtil.download(request, response, downloadPath);
 	}
 
 	@SuppressWarnings("unused")
@@ -41,7 +41,7 @@ public class FileHandler {
 			String str = "name: " + name + " value: " + values[0];
 			logger.info(str);
 		}
-		String result = ServletUtils.multipartOnload(request, uploadPath);
+		String result = ServletUtil.multipartOnload(request, uploadPath);
 		PrintWriter out = null;
 		try {
 			out = response.getWriter();

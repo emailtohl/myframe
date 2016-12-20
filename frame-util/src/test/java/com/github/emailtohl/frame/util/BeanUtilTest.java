@@ -1,20 +1,20 @@
 package com.github.emailtohl.frame.util;
 
-import static com.github.emailtohl.frame.util.BeanTools.compareProperties;
-import static com.github.emailtohl.frame.util.BeanTools.copyList;
-import static com.github.emailtohl.frame.util.BeanTools.copyProperties;
-import static com.github.emailtohl.frame.util.BeanTools.deepCopy;
-import static com.github.emailtohl.frame.util.BeanTools.getAnnotation;
-import static com.github.emailtohl.frame.util.BeanTools.getDeclaredField;
-import static com.github.emailtohl.frame.util.BeanTools.getFieldMap;
-import static com.github.emailtohl.frame.util.BeanTools.getFieldNameValueMap;
-import static com.github.emailtohl.frame.util.BeanTools.getModifiedField;
-import static com.github.emailtohl.frame.util.BeanTools.getPropertyMap;
-import static com.github.emailtohl.frame.util.BeanTools.getPropertyNameValueMap;
-import static com.github.emailtohl.frame.util.BeanTools.injectField;
-import static com.github.emailtohl.frame.util.BeanTools.injectFieldWithString;
-import static com.github.emailtohl.frame.util.BeanTools.merge;
-import static com.github.emailtohl.frame.util.BeanTools.saveListToMap;
+import static com.github.emailtohl.frame.util.BeanUtil.compareProperties;
+import static com.github.emailtohl.frame.util.BeanUtil.copyList;
+import static com.github.emailtohl.frame.util.BeanUtil.copyProperties;
+import static com.github.emailtohl.frame.util.BeanUtil.deepCopy;
+import static com.github.emailtohl.frame.util.BeanUtil.getAnnotation;
+import static com.github.emailtohl.frame.util.BeanUtil.getDeclaredField;
+import static com.github.emailtohl.frame.util.BeanUtil.getFieldMap;
+import static com.github.emailtohl.frame.util.BeanUtil.getFieldNameValueMap;
+import static com.github.emailtohl.frame.util.BeanUtil.getModifiedField;
+import static com.github.emailtohl.frame.util.BeanUtil.getPropertyMap;
+import static com.github.emailtohl.frame.util.BeanUtil.getPropertyNameValueMap;
+import static com.github.emailtohl.frame.util.BeanUtil.injectField;
+import static com.github.emailtohl.frame.util.BeanUtil.injectFieldWithString;
+import static com.github.emailtohl.frame.util.BeanUtil.merge;
+import static com.github.emailtohl.frame.util.BeanUtil.saveListToMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -43,8 +43,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.emailtohl.frame.util.SerializableUtilsTest.Relation1;
-import com.github.emailtohl.frame.util.SerializableUtilsTest.Relation2;
+import com.github.emailtohl.frame.util.SerializableTest.Relation1;
+import com.github.emailtohl.frame.util.SerializableTest.Relation2;
 import com.github.emailtohl.frame.util.entities.Contact;
 import com.github.emailtohl.frame.util.entities.Permission;
 import com.github.emailtohl.frame.util.entities.Person;
@@ -52,7 +52,7 @@ import com.github.emailtohl.frame.util.entities.Person.Gender;
 import com.github.emailtohl.frame.util.entities.Role;
 import com.github.emailtohl.frame.util.entities.User;
 
-public class BeanToolsTest {
+public class BeanUtilTest {
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	Permission p1 = new Permission(), p2 = new Permission(), p3 = new Permission(), p4 = new Permission();
 	Role admin = new Role(), user = new Role();
@@ -283,22 +283,22 @@ public class BeanToolsTest {
 			String name = pd.getName();
 			switch (name) {
 			case "i":
-				BeanTools.injectPropertyWithString(pd, t, "2");
+				BeanUtil.injectPropertyWithString(pd, t, "2");
 				break;
 			case "b":
-				BeanTools.injectPropertyWithString(pd, t, "false");
+				BeanUtil.injectPropertyWithString(pd, t, "false");
 				break;
 			case "by":
-				BeanTools.injectPropertyWithString(pd, t, "2");
+				BeanUtil.injectPropertyWithString(pd, t, "2");
 				break;
 			case "c":
-				BeanTools.injectPropertyWithString(pd, t, "a");
+				BeanUtil.injectPropertyWithString(pd, t, "a");
 				break;
 			case "gender":
-				BeanTools.injectPropertyWithString(pd, t, "FEMALE");
+				BeanUtil.injectPropertyWithString(pd, t, "FEMALE");
 				break;
 			case "birthday":
-				BeanTools.injectPropertyWithString(pd, t, "1982-02-12");
+				BeanUtil.injectPropertyWithString(pd, t, "1982-02-12");
 				break;
 			default:
 
@@ -360,10 +360,10 @@ public class BeanToolsTest {
 	@Test
 	public void testGetGenericClassField() throws NoSuchFieldException, SecurityException {
 		Class<TestGenericType> c = TestGenericType.class;
-		assertEquals(Gender.class, BeanTools.getGenericClass(c.getDeclaredField("set"))[0]);
-		assertEquals(Role.class, BeanTools.getGenericClass(c.getDeclaredField("ls"))[0]);
-		assertEquals(Integer.class, BeanTools.getGenericClass(c.getDeclaredField("map"))[0]);
-		assertEquals(Contact.class, BeanTools.getGenericClass(c.getDeclaredField("map"))[1]);
+		assertEquals(Gender.class, BeanUtil.getGenericClass(c.getDeclaredField("set"))[0]);
+		assertEquals(Role.class, BeanUtil.getGenericClass(c.getDeclaredField("ls"))[0]);
+		assertEquals(Integer.class, BeanUtil.getGenericClass(c.getDeclaredField("map"))[0]);
+		assertEquals(Contact.class, BeanUtil.getGenericClass(c.getDeclaredField("map"))[1]);
 	}
 
 	@Test
@@ -371,16 +371,16 @@ public class BeanToolsTest {
 		BeanInfo bi = Introspector.getBeanInfo(TestGenericType.class, Object.class);
 		for (PropertyDescriptor p : bi.getPropertyDescriptors()) {
 			if ("set".equals(p.getName())) {
-				assertEquals(Gender.class, BeanTools.getGenericClass(p)[0]);
+				assertEquals(Gender.class, BeanUtil.getGenericClass(p)[0]);
 			}
 			if ("ls".equals(p.getName())) {
-				assertEquals(Role.class, BeanTools.getGenericClass(p)[0]);
+				assertEquals(Role.class, BeanUtil.getGenericClass(p)[0]);
 			}
 			if ("map".equals(p.getName())) {
-				assertEquals(Integer.class, BeanTools.getGenericClass(p)[0]);
+				assertEquals(Integer.class, BeanUtil.getGenericClass(p)[0]);
 			}
 			if ("map".equals(p.getName())) {
-				assertEquals(Contact.class, BeanTools.getGenericClass(p)[1]);
+				assertEquals(Contact.class, BeanUtil.getGenericClass(p)[1]);
 			}
 		}
 	}

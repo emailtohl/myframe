@@ -15,7 +15,7 @@ import com.github.emailtohl.frame.dao.myjdbctemplate.RowMapper;
 import com.github.emailtohl.frame.dao.preparedstatementfactory.SqlAndArgs;
 import com.github.emailtohl.frame.site.dao.GoodsDao;
 import com.github.emailtohl.frame.site.dto.GoodsDto;
-import com.github.emailtohl.frame.util.CommonUtils;
+import com.github.emailtohl.frame.util.CommonUtil;
 
 @Component
 public class GoodsDaoImpl extends BaseDao implements GoodsDao {
@@ -77,7 +77,7 @@ public class GoodsDaoImpl extends BaseDao implements GoodsDao {
 		// 第三步，合并sql
 		String sql = SELECT + sa.getPreparedSQL() + timeScopeSa.getPreparedSQL() + " ORDER BY t_goods.id DESC";
 		// 第四步，合并对应的参数
-		Object[] params = CommonUtils.mergeArray(sa.getParamValues(), timeScopeSa.getParamValues());
+		Object[] params = CommonUtil.mergeArray(sa.getParamValues(), timeScopeSa.getParamValues());
 		// 第五步，新建属性列映射对象
 		RowMapper<GoodsDto> rowMapper = new BeanAnnotationRowMapper<GoodsDto>(GoodsDto.class);
 		// 第六步，执行

@@ -14,8 +14,8 @@ import com.github.emailtohl.frame.site.dao.GoodsDao;
 import com.github.emailtohl.frame.site.dto.GoodsDto;
 import com.github.emailtohl.frame.site.filter.AuthenticationFilter;
 import com.github.emailtohl.frame.site.service.GoodsService;
-import com.github.emailtohl.frame.util.BeanTools;
-import com.github.emailtohl.frame.util.CommonUtils;
+import com.github.emailtohl.frame.util.BeanUtil;
+import com.github.emailtohl.frame.util.CommonUtil;
 
 @Component
 public class GoodsServiceImpl implements GoodsService {
@@ -90,7 +90,7 @@ public class GoodsServiceImpl implements GoodsService {
 	}
 
 	private synchronized void updateRecord(GoodsDto preDto, GoodsDto afterDto) {
-		Map<String, Object> map = BeanTools.getModifiedField(preDto, afterDto);
+		Map<String, Object> map = BeanUtil.getModifiedField(preDto, afterDto);
 		Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator();
 		while (it.hasNext()) {
 			Entry<String, Object> entry = it.next();
@@ -107,8 +107,8 @@ public class GoodsServiceImpl implements GoodsService {
 
 	private void setGoodsType(GoodsDto goodsDto) {
 		String[] types = goodsDto.getTypes();
-		if (!CommonUtils.isEmpty(types)) {
-			String s = CommonUtils.join(types, ",");
+		if (!CommonUtil.isEmpty(types)) {
+			String s = CommonUtil.join(types, ",");
 			goodsDto.setType(s);
 		}
 	}

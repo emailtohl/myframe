@@ -1,9 +1,9 @@
 package com.github.emailtohl.frame.util;
 
-import static com.github.emailtohl.frame.util.CommonUtils.isEmpty;
-import static com.github.emailtohl.frame.util.CommonUtils.join;
-import static com.github.emailtohl.frame.util.CommonUtils.mergeArray;
-import static com.github.emailtohl.frame.util.CommonUtils.unescape;
+import static com.github.emailtohl.frame.util.CommonUtil.isEmpty;
+import static com.github.emailtohl.frame.util.CommonUtil.join;
+import static com.github.emailtohl.frame.util.CommonUtil.mergeArray;
+import static com.github.emailtohl.frame.util.CommonUtil.unescape;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -15,7 +15,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CommonUtilsTest {
+public class CommonUtilTest {
 
 	@Before
 	public void setUp() throws Exception {

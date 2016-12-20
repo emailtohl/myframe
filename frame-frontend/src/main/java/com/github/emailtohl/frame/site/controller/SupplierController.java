@@ -14,7 +14,7 @@ import com.github.emailtohl.frame.mvc.DispatcherServlet.JspUrl;
 import com.github.emailtohl.frame.mvc.Mvc;
 import com.github.emailtohl.frame.site.dto.SupplierDto;
 import com.github.emailtohl.frame.site.service.SupplierService;
-import com.github.emailtohl.frame.util.ServletUtils;
+import com.github.emailtohl.frame.util.ServletUtil;
 
 @Mvc(action = "supplier")
 public class SupplierController {
@@ -46,7 +46,7 @@ public class SupplierController {
 	
 	@Mvc(action = "update", method = PUT)
 	public void update(HttpServletRequest request) {
-		SupplierDto supplierDto = ServletUtils.parseForm(request, SupplierDto.class);
+		SupplierDto supplierDto = ServletUtil.parseForm(request, SupplierDto.class);
 		supplierService.updateSupplier(supplierDto);
 	}
 

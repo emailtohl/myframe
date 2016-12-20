@@ -24,7 +24,7 @@ import javax.inject.Named;
 import javax.transaction.Transactional;
 
 import com.github.emailtohl.frame.transition.TransitionProxy;
-import com.github.emailtohl.frame.util.BeanTools;
+import com.github.emailtohl.frame.util.BeanUtil;
 import com.github.emailtohl.frame.util.PackageScanner;
 
 /**
@@ -492,7 +492,7 @@ public class Context {
 	 * @param instance
 	 */
 	private void injectField(Object instance) {
-		for (Entry<String, Field> entry : BeanTools.getFieldMap(instance).entrySet()) {
+		for (Entry<String, Field> entry : BeanUtil.getFieldMap(instance).entrySet()) {
 			Field f = entry.getValue();
 			Inject inject = f.getAnnotation(Inject.class);
 			if (inject == null) {

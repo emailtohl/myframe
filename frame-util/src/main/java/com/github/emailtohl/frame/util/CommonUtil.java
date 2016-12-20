@@ -10,8 +10,8 @@ import java.util.Map;
  * @author helei
  *
  */
-public final class CommonUtils {
-	private CommonUtils() {}
+public final class CommonUtil {
+	private CommonUtil() {}
 	
 	/**
 	 * 判断对象是否为空值

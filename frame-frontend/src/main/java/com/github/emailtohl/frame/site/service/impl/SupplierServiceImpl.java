@@ -14,7 +14,7 @@ import com.github.emailtohl.frame.site.dao.SupplierDao;
 import com.github.emailtohl.frame.site.dto.SupplierDto;
 import com.github.emailtohl.frame.site.filter.AuthenticationFilter;
 import com.github.emailtohl.frame.site.service.SupplierService;
-import com.github.emailtohl.frame.util.BeanTools;
+import com.github.emailtohl.frame.util.BeanUtil;
 
 @Component
 public class SupplierServiceImpl implements SupplierService {
@@ -78,7 +78,7 @@ public class SupplierServiceImpl implements SupplierService {
 	}
 
 	private void updateRecord(SupplierDto preDto, SupplierDto afterDto) {
-		Map<String, Object> map = BeanTools.getModifiedField(preDto, afterDto);
+		Map<String, Object> map = BeanUtil.getModifiedField(preDto, afterDto);
 		Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator();
 		while (it.hasNext()) {
 			Entry<String, Object> entry = it.next();

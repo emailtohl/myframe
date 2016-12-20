@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.github.emailtohl.frame.cdi.Context;
-import com.github.emailtohl.frame.util.BeanTools;
+import com.github.emailtohl.frame.util.BeanUtil;
 import com.github.emailtohl.frame.util.Serializing;
 
 /**
@@ -201,7 +201,7 @@ public class DispatcherServlet extends HttpServlet {
 		if (request == null || parameterBean == null)
 			return;
 		Map<String, String[]> paramMap = request.getParameterMap();
-		Map<String, Field> beanMap = BeanTools.getFieldMap(parameterBean);
+		Map<String, Field> beanMap = BeanUtil.getFieldMap(parameterBean);
 		for (Entry<String, String[]> paramEntry : paramMap.entrySet()) {
 			String[] parameterValues = paramEntry.getValue();
 			if (parameterValues == null)
@@ -218,7 +218,7 @@ public class DispatcherServlet extends HttpServlet {
 					logger.log(Level.SEVERE, "请求的参数注入失败", e);
 				}
 			} else if (parameterValues.length > 0) {
-				BeanTools.injectFieldWithString(field, parameterBean, parameterValues[0]);
+				BeanUtil.injectFieldWithString(field, parameterBean, parameterValues[0]);
 			}
 		}
 	}

@@ -10,7 +10,7 @@ import com.github.emailtohl.frame.site.dao.SupplierDao;
 import com.github.emailtohl.frame.site.dao.po.RemoteSupplierPo;
 import com.github.emailtohl.frame.site.dao.po.SupplierPo;
 import com.github.emailtohl.frame.site.service.SupplierDataSync;
-import com.github.emailtohl.frame.util.BeanTools;
+import com.github.emailtohl.frame.util.BeanUtil;
 
 @Component
 public class SupplierDataSyncImpl implements SupplierDataSync {
@@ -38,7 +38,7 @@ public class SupplierDataSyncImpl implements SupplierDataSync {
 
 	public void syncSupplierData() {
 		List<RemoteSupplierPo> remoteSupplierList = remoteDao.querySupplier(new RemoteSupplierPo());
-		List<SupplierPo> srcPoList = BeanTools.copyList(remoteSupplierList, SupplierPo.class);
+		List<SupplierPo> srcPoList = BeanUtil.copyList(remoteSupplierList, SupplierPo.class);
 		supplierDao.syncData(srcPoList);
 	}
 

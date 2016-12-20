@@ -52,9 +52,9 @@ import java.util.regex.Pattern;
  * @author helei
  * 2015.11.05
  */
-public final class BeanTools {
-	private static final Logger logger = LogManager.getLogManager().getLogger(BeanTools.class.getName());
-	private BeanTools() {}
+public final class BeanUtil {
+	private static final Logger logger = LogManager.getLogManager().getLogger(BeanUtil.class.getName());
+	private BeanUtil() {}
 
 	/**
 	 * 本方法分析对象bean，将其Field名和Field转存到map中

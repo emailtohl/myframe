@@ -36,7 +36,7 @@ import com.github.emailtohl.frame.util.entities.Person.Gender;
 import com.github.emailtohl.frame.util.entities.Role;
 import com.github.emailtohl.frame.util.entities.User;
 
-public class SerializableUtilsTest {
+public class SerializableTest {
 	Serializing util = new Serializing();
 	class TestUser extends User {
 		private static final long serialVersionUID = -8145051855829227968L;

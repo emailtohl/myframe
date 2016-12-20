@@ -21,7 +21,7 @@ import com.github.emailtohl.frame.site.dto.GoodsDto;
 import com.github.emailtohl.frame.site.dto.SupplierDto;
 import com.github.emailtohl.frame.site.service.GoodsService;
 import com.github.emailtohl.frame.site.service.SupplierService;
-import com.github.emailtohl.frame.util.ServletUtils;
+import com.github.emailtohl.frame.util.ServletUtil;
 
 @Mvc
 public class GoodsController {
@@ -59,7 +59,7 @@ public class GoodsController {
 	@Mvc(action = "goods/page", method = GET)
 	public void get(GoodsDto goodsDto, HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		logger.finer(ServletUtils.getFirstParamsMap(request).toString());
+		logger.finer(ServletUtil.getFirstParamsMap(request).toString());
 		Pager<GoodsDto> goodsPager = goodsService.queryPage(goodsDto);
 		List<SupplierDto> supplierList = supplierService.querySupplier(new SupplierDto());
 		request.setAttribute("goodsPager", goodsPager);
@@ -108,7 +108,7 @@ public class GoodsController {
 			throws IOException {
 		// Servlet不能直接获取参数，不管是Content-Disposition还是application/x-www-form-urlencoded
 		// 所以只能手写获取代码
-		GoodsDto goodsDto = ServletUtils.parseForm(request, GoodsDto.class);
+		GoodsDto goodsDto = ServletUtil.parseForm(request, GoodsDto.class);
 		goodsService.updateGoods(goodsDto);
 		response.setStatus(204);// No Content
 	}

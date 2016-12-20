@@ -25,7 +25,7 @@ import com.github.emailtohl.frame.cdi.testsite.service.SomeService;
 import com.github.emailtohl.frame.cdi.testsite.service.SomeServiceImpl;
 import com.github.emailtohl.frame.cdi.testsite.util.OtherUtil;
 import com.github.emailtohl.frame.cdi.testsite.util.SomeOneUtil;
-import com.github.emailtohl.frame.util.BeanTools;
+import com.github.emailtohl.frame.util.BeanUtil;
 import com.github.emailtohl.frame.util.PackageScanner;
 /**
  * 专门测试私有方法
@@ -64,7 +64,7 @@ public class ContextPrivateTest {
 	@BeforeClass
 	public static void setUp() throws Exception {
 		classSet = PackageScanner.getClasses("com.github.emailtohl.frame.cdi.testsite");
-		Map<String, Object> map = BeanTools.getFieldNameValueMap(context);
+		Map<String, Object> map = BeanUtil.getFieldNameValueMap(context);
 		instanceModelSet = (Set<InstanceModel>) map.get("instanceModelSet");
 		nameModelMap = (Map<String, InstanceModel>) map.get("nameModelMap");
 		typeModelMap = (Map<Class<?>, InstanceModel>) map.get("typeModelMap");
