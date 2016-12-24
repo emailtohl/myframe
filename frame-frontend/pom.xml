@@ -55,16 +55,16 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>postgresql</groupId>
+			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>9.1-901-1.jdbc4</version>
+			<version>9.4.1209.jre7</version>
 			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.37</version>
+			<version>6.0.5</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -95,9 +95,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
+				<version>3.6.0</version>
 				<configuration>
 					<compilerVersion>1.8</compilerVersion>
+					<!-- 启动Java8的获取方法参数名字的新功能 -->
+					<compilerArgument>-parameters</compilerArgument>
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
