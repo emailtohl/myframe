@@ -3,6 +3,9 @@
 
 <div id="supplier-page" class="page">
 
+	<div class="box-header with-border">
+		<h3 class="box-title">组合查询供应商</h3>
+	</div>
 	<form id="supplier-query" class="form-inline">
 		<span class="form-group">
 		<label>供应商名</label>

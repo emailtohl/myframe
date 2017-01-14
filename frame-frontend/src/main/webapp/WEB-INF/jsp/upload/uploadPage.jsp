@@ -2,7 +2,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <div id="upload-page" class="page">
-	<h1 class="page-header">上传文件</h1>
+	<div class="box-header with-border">
+		<h3 class="box-title">上传文件</h3>
+	</div>
 	<div class="row" id="upload-div">
 		<div class="col-xs-6">
 			<div class="form-group">
