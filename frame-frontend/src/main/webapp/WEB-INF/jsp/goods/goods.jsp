@@ -5,34 +5,62 @@
 
 <div id="goods-page" class="page">
 	<div id="goods-list-page" class="sub-page" style="z-index:3;">
-		<div class="panel">
-			<div class="form-group">
-				<form id="goods-query" method="GET" action="goods/list.do" class="form-inline">
-					<label>查询的结果与组合框一致</label>
-			   		<input type="submit" value="查询" class="btn btn-default">
-			   		<span class="tip">输入有误</span>
-			   		<br>
-					<input class="form-control" type="text" name="goodsName" placeholder="商品名" class="" value="${queryParam.goodsName}">
-					<input class="form-control" type="text" name="price" placeholder="价格,必须有小数点" class=""  value="${queryParam.price}">
-					<br>
-					<input class="form-control" type="number" name="amount" placeholder="数量" class=""  value="${queryParam.amount}">
-					<input class="form-control" type="text" name="supplierName" placeholder="供应商" class=""  value="${queryParam.supplierName}">
-					<br>
-					<p>
-					</p>
-					<input class="form-control" name="startDate" type="date" class="" value="${queryParam.startDate}">
-					<input class="form-control" name="endDate" type="date" class="" value="${queryParam.endDate}">
-					<div style="margin-top: 20px">
-						<c:import url="../common/page.jsp">
-							<c:param name="pageNum" value="${goodsPager.pageNum}" />
-							<c:param name="totalPage" value="${goodsPager.totalPage}" />
-						</c:import>
-					</div>
-			   	</form>
-			   	<nav class="page-item" data-pagenum="${goodsPager.pageNum}" data-totalpage="${goodsPager.totalPage}"></nav>
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">组合查询商品</h3>
 			</div>
+			<form class="box box-primary" role="form" id="goods-query" method="GET" action="goods/list.do" class="form-inline">
+				<div class="col-xs-4">
+					<div class="form-group">
+						<label>商品名</label>
+						<input class="form-control" type="text" name="goodsName" placeholder="商品名" class="form-control" value="${queryParam.goodsName}">
+					</div>
+					<div class="form-group">
+						<label>商品价格</label>
+						<input class="form-control" type="text" name="price" placeholder="价格,必须有小数点" class="form-control"  value="${queryParam.price}">
+					</div>
+				</div>
+				<div class="col-xs-4">
+					<div class="form-group">
+						<label>数量</label>
+						<input class="form-control" type="number" name="amount" placeholder="数量" class="form-control"  value="${queryParam.amount}">
+					</div>
+					<div class="form-group">
+						<label>供应商</label>
+						<input class="form-control" type="text" name="supplierName" placeholder="供应商" class="form-control"  value="${queryParam.supplierName}">
+					</div>
+				</div>
+				<div class="col-xs-4">
+					<div class="form-group">
+						<label>起始时间</label>
+						<input class="form-control" name="startDate" type="date" class="" value="${queryParam.startDate}">
+					</div>
+					<div class="form-group">
+						<label>结束时间</label>
+						<input class="form-control" name="endDate" type="date" class="" value="${queryParam.endDate}">
+					</div>
+				</div>
+				
+				<div class="col-xs-6">
+					<c:import url="../common/page.jsp">
+						<c:param name="pageNum" value="${goodsPager.pageNum}" />
+						<c:param name="totalPage" value="${goodsPager.totalPage}" />
+					</c:import>
+				</div>
+				<div class="col-xs-6">
+					<nav class="page-item" data-pagenum="${goodsPager.pageNum}" data-totalpage="${goodsPager.totalPage}"></nav>
+				</div>
+				
+				<div class="box-footer">
+					<div class="col-xs-6">
+				   		<span class="tip">输入有误</span>
+					</div>
+					<div class="col-xs-6">
+				   		<input type="submit" value="查询" class="btn btn-default pull-right">
+					</div>
+				</div>
+		   	</form>
 		</div>
-		
 		<div style="margin-top: 20px" class="panel" id="goods-list">
 			<h3>显示所有商品:</h3>
 			<br>
