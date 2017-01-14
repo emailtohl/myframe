@@ -5,7 +5,7 @@ app.define('goods/edit', ['goods/service', 'common/validate'], function(service,
 	return function(id) {
 		var model, updateForm, submitButton, goodsNameInput, priceInput, amountInput, supplierSelect, descriptionTextarea;
 		updateForm = app.selectOne('form#goods-edit');
-		submitButton = updateForm.querySelector('input[type="submit"]');
+		submitButton = updateForm.querySelector('button[type="submit"]');
 		goodsNameInput = updateForm.querySelector('input[name="goodsName"]');
 		priceInput = updateForm.querySelector('input[name="price"]');
 		amountInput = updateForm.querySelector('input[name="amount"]');

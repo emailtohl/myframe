@@ -16,15 +16,15 @@ app.define('goods/service', [], function() {
 			for (var i = 0; i < subPages.length; i++) {
 				subPages[i].style.display = 'none';
 			}
-			app.byid('goods-add-page').style.display = 'block';
+			app.byid('goods-add-page').style.display = 'inline-table';
 		},
 		editTab : function() {
 			var subPages = document.getElementsByClassName('sub-page');
 			for (var i = 0; i < subPages.length; i++) {
 				subPages[i].style.display = 'none';
 			}
-			app.byid('goods-edit-page').style.display = 'block';
-			app.selectOne('#goods-edit-page input[type="submit"]').disabled = false;
+			app.byid('goods-edit-page').style.display = 'inline-table';
+			app.selectOne('#goods-edit-page button[type="submit"]').disabled = false;
 		},
 		/**
 		 * 处理相应

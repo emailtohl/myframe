@@ -5,7 +5,7 @@ app.define('goods/add', ['goods/service', 'common/validate'], function(service, 
 	return function() {
 		var addForm, submitButton, goodsNameInput, priceInput, amountInput, supplierSelect;
 		addForm = app.selectOne('form#goods-add');
-		submitButton = addForm.querySelector('input[type="submit"]');
+		submitButton = addForm.querySelector('button[type="submit"]');
 		goodsNameInput = addForm.querySelector('input[name="goodsName"]');
 		priceInput = addForm.querySelector('input[name="price"]');
 		amountInput = addForm.querySelector('input[name="amount"]');

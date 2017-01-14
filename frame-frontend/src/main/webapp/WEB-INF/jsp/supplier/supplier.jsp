@@ -65,9 +65,9 @@
 						<td><input class="edit form-control" type="text" name="description" value="${ls.description}"></td>
 						<td><input class="edit form-control" type="email" name="email" value="${ls.email}"></td>
 						<td><input class="edit form-control" type="text" name="rank" value="${ls.rank}"></td>
-						<td><button type="button" class="save-supplier-button btn btn-success">保存</button></td>
+						<td><button type="button" class="save-supplier-button btn btn-success btn-xs margin">保存</button></td>
 						<c:if test="${sessionScope.user.roleId eq 1}">
-							<td><button type="button" class="delete-supplier-button btn btn-warning">删除</button></td>
+							<td><button type="button" class="delete-supplier-button btn btn-danger btn-xs margin">删除</button></td>
 						</c:if>
 					</tr>
 				</c:forEach>

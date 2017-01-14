@@ -48,7 +48,7 @@
 					</c:import>
 				</div>
 				<div class="col-xs-6">
-					<nav class="page-item" data-pagenum="${goodsPager.pageNum}" data-totalpage="${goodsPager.totalPage}"></nav>
+					<nav class="page-item pull-right" data-pagenum="${goodsPager.pageNum}" data-totalpage="${goodsPager.totalPage}"></nav>
 				</div>
 				
 				<div class="box-footer">
@@ -117,84 +117,142 @@
 	</div>
 	
 	<div id="goods-add-page" class="sub-page" style="z-index:2;">
-		<h3>添加商品</h3>
-		<div>
-			<form id="goods-add" action="goods/add" method="POST">
-				<div class="form-group">
-					<label>商品名</label>
-					<input type="text" name="goodsName" class="input"></input>
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">添加商品</h3>
+			</div>
+			<form id="goods-add" action="goods/add" method="POST" class="box box-primary" role="form">
+				<div class="col-xs-4">
+					<div class="form-group">
+						<label>商品名</label>
+						<input class="form-control" type="text" name="goodsName" placeholder="商品名">
+					</div>
 				</div>
-				<div class="form-group">
-					<label>价格</label>
-					<input type="text" name="price"></input>
+				<div class="col-xs-4">
+					<div class="form-group">
+						<label>商品价格</label>
+						<input class="form-control" type="text" name="price" placeholder="价格,必须有小数点">
+					</div>
 				</div>
-				<div class="form-group">
-					<label>数量</label>
-					<input type="number" name="amount"></input>
+				<div class="col-xs-4">
+					<div class="form-group">
+						<label>数量</label>
+						<input class="form-control" type="number" name="amount" placeholder="数量">
+					</div>
 				</div>
-				<div class="form-group">
-					<label>供应商</label>
-					<select name="supplierId">
-						<c:forEach items="${requestScope.supplierList}" var="ls">
-							<option value="${ls.supplierId}">${ls.supplierName}</option>
-						</c:forEach>
-					</select>
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label>供应商</label>
+						<select name="supplierId" class="form-control">
+							<c:forEach items="${requestScope.supplierList}" var="ls">
+								<option value="${ls.supplierId}">${ls.supplierName}</option>
+							</c:forEach>
+						</select>
+					</div>
 				</div>
-				<div class="form-group">
-					<input name="types" value="食品" type="checkbox">
-					<label>食品</label>
-					<input name="types" value="用品" type="checkbox">
-					<label>用品</label>
-					<input name="types" value="其他" type="checkbox">
-					<label>其他</label>
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label>类型</label>
+						<div>
+							<label class="checkbox-inline">
+							  <input name="types" type="checkbox" value="食品"> 食品
+							</label>
+							<label class="checkbox-inline">
+							  <input name="types" type="checkbox" value="用品"> 用品
+							</label>
+							<label class="checkbox-inline">
+							  <input name="types" type="checkbox" value="其他"> 其他
+							</label>
+						</div>
+					</div>
 				</div>
-				<textarea name="description" style="width: 390px; height: 99px;"></textarea>
-				<input class="btn btn-default" type="submit" value="提交"></input>
+				<div class="col-xs-12">
+					<div class="form-group">
+						<textarea row="3" class="form-control" name="description"></textarea>
+					</div>
+				</div>
+				<div class="box-footer">
+					<div class="col-xs-6">
+						<label>校验提示</label>
+				   		<div id="goods-add-page_cue" class="validate-font-color"></div>
+					</div>
+					<div class="col-xs-6">
+						<button type="button" class="back btn btn-default">返回</button>
+				   		<button class="btn btn-default pull-right" type="submit">提交</button>
+					</div>
+				</div>
+				
 			</form>
-			<button type="button" class="back btn btn-default">返回</button>
 		</div>
-		<h3>校验提示</h3>
-		<div id="goods-add-page_cue" class="validate-font-color"></div>
 	</div>
 	
 	<div id="goods-edit-page" class="sub-page" style="z-index:1;">
-		<h3>编辑商品</h3>
-		<form id="goods-edit" action="goods/update" method="POST">
-			<div class="form-group">
-				<label>商品名</label>
-				<input type="text" name="goodsName"></input>
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">编辑商品</h3>
 			</div>
-			<div class="form-group">
-				<label>价格</label>
-				<input type="text" name="price"></input>
-			</div>
-			<div class="form-group">
-				<label>数量</label>
-				<input type="number" name="amount"></input>
-			</div>
-			<div class="form-group">
-				<label>供应商</label>
-				<select name="supplierId">
-					<c:forEach items="${requestScope.supplierList}" var="ls">
-						<option value="${ls.supplierId}">${ls.supplierName}</option>
-					</c:forEach>
-				</select>
-			</div>
-			<div class="form-group">
-				<input name="types" value="食品" type="checkbox">
-				<label>食品</label>
-				<input name="types" value="用品" type="checkbox">
-				<label>用品</label>
-				<input name="types" value="其他" type="checkbox">
-				<label>其他</label>
-			</div>
-			<textarea name="description" style="width: 390px; height: 99px;"></textarea>
-			<div>
-				<input class="btn btn-default" type="submit" value="修改"></input>
-			</div>
-		</form>
-		<span><button type="button" class="back btn btn-default">返回</button></span>
-		<h3>校验提示</h3>
-		<div id="goods-edit-page_cue" class="validate-font-color"></div>
+			<form id="goods-edit" action="goods/update" method="POST" class="box box-primary" role="form">
+				<div class="col-xs-4">
+					<div class="form-group">
+						<label>商品名</label>
+						<input class="form-control" type="text" name="goodsName" placeholder="商品名">
+					</div>
+				</div>
+				<div class="col-xs-4">
+					<div class="form-group">
+						<label>商品价格</label>
+						<input class="form-control" type="text" name="price" placeholder="价格,必须有小数点">
+					</div>
+				</div>
+				<div class="col-xs-4">
+					<div class="form-group">
+						<label>数量</label>
+						<input class="form-control" type="number" name="amount" placeholder="数量">
+					</div>
+				</div>
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label>供应商</label>
+						<select name="supplierId" class="form-control">
+							<c:forEach items="${requestScope.supplierList}" var="ls">
+								<option value="${ls.supplierId}">${ls.supplierName}</option>
+							</c:forEach>
+						</select>
+					</div>
+				</div>
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label>类型</label>
+						<div>
+							<label class="checkbox-inline">
+							  <input name="types" type="checkbox" value="食品"> 食品
+							</label>
+							<label class="checkbox-inline">
+							  <input name="types" type="checkbox" value="用品"> 用品
+							</label>
+							<label class="checkbox-inline">
+							  <input name="types" type="checkbox" value="其他"> 其他
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<div class="form-group">
+						<textarea row="3" class="form-control" name="description"></textarea>
+					</div>
+				</div>
+				<div class="box-footer">
+					<div class="col-xs-6">
+						<label>校验提示</label>
+				   		<div id="goods-edit-page_cue" class="validate-font-color"></div>
+					</div>
+					<div class="col-xs-6">
+						<button type="button" class="back btn btn-default">返回</button>
+				   		<button class="btn btn-default pull-right" type="submit">提交</button>
+					</div>
+				</div>
+			</form>
+		</div>
+
 	</div>
 </div>
