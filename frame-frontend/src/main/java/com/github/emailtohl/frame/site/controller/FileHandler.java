@@ -1,5 +1,7 @@
 package com.github.emailtohl.frame.site.controller;
 
+import static com.github.emailtohl.frame.mvc.RequestMethod.GET;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.github.emailtohl.frame.mvc.Mvc;
 import com.github.emailtohl.frame.mvc.RequestMethod;
+import com.github.emailtohl.frame.mvc.DispatcherServlet.JspUrl;
 import com.github.emailtohl.frame.util.ServletUtil;
 
 @Mvc(action = "file/")
@@ -19,6 +22,11 @@ public class FileHandler {
 	private static final String uploadPath = "/resource/upload/";
 	private static final String downloadPath = "/resource/download/";
 
+	@Mvc(action = "page", method = GET)
+	public JspUrl page(HttpServletRequest request, HttpServletResponse response) {
+		return new JspUrl("upload/uploadPage.jsp");// 直接返回JspUrl对象可内部跳转
+	}
+	
 	@Mvc(action = "upload")
 	public void upload(HttpServletRequest request, HttpServletResponse response) {
 		ServletUtil.upload(request, response, uploadPath, null);

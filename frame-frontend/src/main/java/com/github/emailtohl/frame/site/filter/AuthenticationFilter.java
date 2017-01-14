@@ -98,6 +98,7 @@ public class AuthenticationFilter implements Filter {
 		accesses1.add("goods/delete");
 		accesses1.add("supplier/delete");
 		accesses1.add("file/multiUpload");
+		accesses1.add("file/page");
 		accesses1.add("file/upload");
 		roleAccessMap.put(1, accesses1);
 	}

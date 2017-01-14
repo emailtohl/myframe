@@ -1,4 +1,5 @@
 util.whenReady(function() {
+	// Cotext来自于执行的script标签，第二个参数是脚本的根目录
 	Application = util.inherit(Context, 'resource/scripts/');
 	Application.prototype.byid = function(id) {
 		return document.getElementById(id);
@@ -34,6 +35,18 @@ util.whenReady(function() {
 		});
 	}
 	/**
+	 * 加载文件上传页面
+	 * @returns
+	 */
+	function loadUploadPage() {
+		util.get('file/page', function(xhr) {
+			app.byid("body").innerHTML = xhr.responseText;
+			app.require(['upload/service', 'upload/controller'], function(service, ctrl) {
+				ctrl();
+			});
+		});
+	}
+	/**
 	 * 为Tab页添加激活样式
 	 */
 	function active(activItem) {
@@ -58,39 +71,12 @@ util.whenReady(function() {
 		active(this);
 	};
 	/**
-	 * 下载功能
+	 * 切换上传模块
 	 */
-	app.byid("download").onclick = function() {
-		window.open('file/download?filename=img.png');
+	app.byid("uploadLabel").onclick = function() {
+		loadUploadPage();
+		active(this);
 	};
-	/**
-	 * 图片翻转功能
-	 */
-	util.rollover();
-	/**
-	 * multipart/form-data文件上传功能
-	 */
-	var promise;
-	app.byid('multiUpload').onsubmit = function(event) {
-		event.preventDefault();
-		promise = util.post('file/multiUpload', this, null, progressListener);
-		promise.success(function(xhr) {
-			alert(xhr.responseText);
-		}).error(function(xhr) {
-			console.log(xhr);
-			alert('上传失败，检查是否超出容量，有无权限');
-		});
-	};
-	app.byid('cancel').onclick = function(event) {
-		event.preventDefault();
-		if (promise) {
-			promise.abort = true;
-		}
-	};
-	
-	function progressListener(value) {
-		app.byid('progress').value = value;
-	}
 	
 	/**
 	 * 聊天功能

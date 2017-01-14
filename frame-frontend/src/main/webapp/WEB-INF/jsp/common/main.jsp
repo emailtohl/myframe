@@ -26,6 +26,7 @@
 		
 		<link rel="stylesheet" href="resource/lib/bootstrap/css/bootstrap.css" />
 		<link rel="stylesheet" href="resource/lib/bootstrap/css/bootstrap-theme.css" />
+		<link rel="stylesheet" href="resource/css/navbar.css" />
 		<link rel="stylesheet" href="resource/css/common/main.css" />
 		<link rel="stylesheet" href="resource/css/common/header.css" />
 		<link rel="stylesheet" href="resource/css/common/footer.css" />
@@ -38,7 +39,7 @@
 		<script type="text/javascript" src="resource/lib/jquery/jquery-3.1.0.js"></script>
 	</head>
 	<body>
-		<div class="container-fluid">
+		<div class="container">
 			<div id="header">
 				<jsp:include page="header.jsp"></jsp:include>
 			</div>
