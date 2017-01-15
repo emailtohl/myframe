@@ -4,7 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <div id="goods-page" class="page">
-	<div id="goods-list-page" class="sub-page" style="z-index:3;">
+	<div id="goods-list-page" class="sub-page">
 		<div class="box box-primary">
 			<div class="box-header with-border">
 				<h3 class="box-title">组合查询商品</h3>
@@ -61,7 +61,7 @@
 				</div>
 		   	</form>
 		</div>
-		<div style="margin-top: 20px" class="panel" id="goods-list">
+		<div class="panel" id="goods-list">
 			<h3>显示所有商品:</h3>
 			<br>
 			<table class="table table-striped table-hover">
@@ -116,7 +116,7 @@
 		
 	</div>
 	
-	<div id="goods-add-page" class="sub-page" style="z-index:2;">
+	<div id="goods-add-page" class="sub-page">
 		<div class="box box-primary">
 			<div class="box-header with-border">
 				<h3 class="box-title">添加商品</h3>
@@ -186,7 +186,7 @@
 		</div>
 	</div>
 	
-	<div id="goods-edit-page" class="sub-page" style="z-index:1;">
+	<div id="goods-edit-page" class="sub-page">
 		<div class="box box-primary">
 			<div class="box-header with-border">
 				<h3 class="box-title">编辑商品</h3>
