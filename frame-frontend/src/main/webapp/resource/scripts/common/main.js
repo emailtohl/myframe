@@ -17,6 +17,10 @@ util.whenReady(function() {
 	 */
 	function loadGoodsPage() {
 		util.get('goods/page', function(xhr) {
+			if (!xhr.responseText) {
+				location.replace('login');
+				return;
+			}
 			app.byid("body").innerHTML = xhr.responseText;
 			app.require(['goods/controller'], function(ctrl) {
 				ctrl();
@@ -28,6 +32,10 @@ util.whenReady(function() {
 	 */
 	function loadSupplierPage() {
 		util.get('supplier/page', function(xhr) {
+			if (!xhr.responseText) {
+				location.replace('login');
+				return;
+			}
 			app.byid("body").innerHTML = xhr.responseText;
 			app.require(['supplier/service', 'supplier/controller'], function(service, ctrl) {
 				ctrl();
@@ -40,6 +48,10 @@ util.whenReady(function() {
 	 */
 	function loadUploadPage() {
 		util.get('file/page', function(xhr) {
+			if (!xhr.responseText) {
+				location.replace('login');
+				return;
+			}
 			app.byid("body").innerHTML = xhr.responseText;
 			app.require(['upload/service', 'upload/controller'], function(service, ctrl) {
 				ctrl();
