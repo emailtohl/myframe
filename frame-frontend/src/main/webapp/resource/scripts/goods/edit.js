@@ -51,7 +51,7 @@ app.define('goods/edit', ['goods/service', 'common/validate'], function(service,
 			};
 			
 			amountInput.value = model.amount;
-			amountInput.onkeyup = function(event) {
+			amountInput.onchange = function(event) {
 				validate();
 				model.amount = this.value;
 			};
