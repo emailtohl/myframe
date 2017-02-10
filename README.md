@@ -35,7 +35,7 @@
 ## 1  下载与导入
 本项目是聚合的maven项目，先git clone到本地，然后用eclipse导入，再import为maven。
 frame-frontend作为入口，也是示例的“业务代码”，它使用两个数据源，代码会定时从一个数据源中的供销商表同步到本地数据库中，sql脚本位于src/main/resources中，按照配置创建数据源，开发中使用的数据库产品是postgresql。
-> 说明，需要首先建立数据库，否则项目启动时会自动同步“远程”数据到“本地”数据库上。
+> 说明，为了实现多数据源，程序定时将myframe_remote数据源的t_supplier表的数据同步到myframe_local的t_supplier表中，所以需要创建两个数据库：myframe_remote和myframe_local，并执行SQL脚本，而数据库对应的配置见remoteDatabase.properties和database.properties。
 
 ## 2 frame-frontend
 
