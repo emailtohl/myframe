@@ -819,6 +819,31 @@ var util = (function(){
 		return promise;
 	}
 	
+	/**
+	 * 深度拷贝
+	 * @param target
+	 * @param source
+	 * @returns
+	 */
+	function deepCopy(target, source) {
+		if (!source || typeof source !== 'object') {
+			return;
+		}
+		if (!target || typeof target !== 'object') {
+			return;
+		}
+		for ( var key in source) {
+			if (source.hasOwnProperty(key)) {
+				if (source[key] && typeof source[key] == 'object') {
+					target[key] = {};
+					deepCopy(target[key], source[key]);
+				} else {
+					target[key] = source[key];
+				}
+			}
+		}
+	}
+	
 	return {
 		/**
 		 * 参数：o
@@ -940,6 +965,11 @@ var util = (function(){
 		 * 说明：异步下载js文件或css
 		 */
 		loadasync : loadasync,
+		/**
+		 * 参数：target, source
+		 * 说明：对象的深度拷贝
+		 */		
+		deepCopy : deepCopy,
 	};
 	
 }());
