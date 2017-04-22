@@ -1,6 +1,6 @@
 package com.github.emailtohl.frame.util;
 
-import static com.github.emailtohl.frame.util.CommonUtil.isEmpty;
+import static com.github.emailtohl.frame.util.CommonUtil.*;
 import static com.github.emailtohl.frame.util.CommonUtil.join;
 import static com.github.emailtohl.frame.util.CommonUtil.mergeArray;
 import static com.github.emailtohl.frame.util.CommonUtil.unescape;
@@ -58,6 +58,12 @@ public class CommonUtilTest {
 		assertTrue(s.length == 6);
 	}
 
+	@Test
+	public void testReplaceBlank() {
+		String s = replaceBlank("您\t好，  \r\n世    界");
+		assertEquals("您好，世界", s);
+	}
+	
 	@Test
 	public void testUnescape() {
 		String s = unescape("%u60A8%u597D%uFF0C%u4E16%u754C");

@@ -3,6 +3,8 @@ package com.github.emailtohl.frame.util;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 公用的工具类，对对象是否空值，数组合并等提供支持
@@ -103,6 +105,19 @@ public final class CommonUtil {
 				return newArray;
 			}
 		}
+	}
+	
+	/**
+	 * 去掉字符串中的空格、制表符、回车、换行
+	 */
+	private static Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+	public static String replaceBlank(String str) {
+		String dest = "";
+		if (str!=null) {
+			Matcher m = p.matcher(str);
+			dest = m.replaceAll("");
+		}
+		return dest;
 	}
 	
 	/**
