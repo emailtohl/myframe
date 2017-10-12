@@ -27,8 +27,8 @@
 		
 		<div style="margin-top: 30px">
 		<c:import url="../common/page.jsp">
-			<c:param name="pageNum" value="${supplierPager.pageNum}" />
-			<c:param name="totalPage" value="${supplierPager.totalPage}" />
+			<c:param name="pageNum" value="${supplierPage.pageNum}" />
+			<c:param name="totalPage" value="${supplierPage.totalPage}" />
 		</c:import>
 		</div>
 		
@@ -39,7 +39,7 @@
 	<button type="button" id="add-supplier-button" class="btn btn-default">新增供应商</button>
 	<table class="table table-striped table-hover">
 		<c:choose>
-			<c:when test="${empty requestScope.supplierPager.dataList}">
+			<c:when test="${empty requestScope.supplierPage.dataList}">
 				<div class="errormsg">
 					<c:out value="${requestScope.IllegalInput}" default="未查找到结果"/>
 				</div>
@@ -59,7 +59,7 @@
 				</tr>
 				</thead>
 				<tbody class="form-inline">
-				<c:forEach items="${requestScope.supplierPager.dataList}" var="ls">
+				<c:forEach items="${requestScope.supplierPage.dataList}" var="ls">
 					<tr>
 						<td><input class="edit form-control" type="hidden" readonly="readonly" name="supplierId" value="${ls.supplierId}"></td>
 						<td><input class="edit form-control" type="text" name="supplierName" value="${ls.supplierName}"></td>

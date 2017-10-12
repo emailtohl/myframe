@@ -43,12 +43,12 @@
 				
 				<div class="col-xs-6">
 					<c:import url="../common/page.jsp">
-						<c:param name="pageNum" value="${goodsPager.pageNum}" />
-						<c:param name="totalPage" value="${goodsPager.totalPage}" />
+						<c:param name="pageNum" value="${goodsPage.pageNum}" />
+						<c:param name="totalPage" value="${goodsPage.totalPage}" />
 					</c:import>
 				</div>
 				<div class="col-xs-6">
-					<nav class="page-item pull-right" data-pagenum="${goodsPager.pageNum}" data-totalpage="${goodsPager.totalPage}"></nav>
+					<nav class="page-item pull-right" data-pagenum="${goodsPage.pageNum}" data-totalpage="${goodsPage.totalPage}"></nav>
 				</div>
 				
 				<div class="box-footer">
@@ -66,7 +66,7 @@
 			<br>
 			<table class="table table-striped table-hover">
 				<c:choose>
-					<c:when test="${empty requestScope.goodsPager.dataList}">
+					<c:when test="${empty requestScope.goodsPage.dataList}">
 						<div class="errormsg">
 							<c:out value="${requestScope.IllegalInput}" default="未查找到结果" />
 						</div>
@@ -86,7 +86,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach items="${requestScope.goodsPager.dataList}" var="item">
+							<c:forEach items="${requestScope.goodsPage.dataList}" var="item">
 								<tr>
 									<td class="">${item.goodsName}</td>
 									<td class="">${item.price}</td>

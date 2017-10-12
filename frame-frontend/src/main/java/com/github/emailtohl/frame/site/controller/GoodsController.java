@@ -14,7 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.emailtohl.frame.dao.Pager;
+import com.github.emailtohl.frame.dao.Page;
 import com.github.emailtohl.frame.mvc.DispatcherServlet.JspUrl;
 import com.github.emailtohl.frame.mvc.Mvc;
 import com.github.emailtohl.frame.site.dto.GoodsDto;
@@ -60,9 +60,9 @@ public class GoodsController {
 	public void get(GoodsDto goodsDto, HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		logger.finer(ServletUtil.getFirstParamsMap(request).toString());
-		Pager<GoodsDto> goodsPager = goodsService.queryPage(goodsDto);
+		Page<GoodsDto> goodsPage = goodsService.queryPage(goodsDto);
 		List<SupplierDto> supplierList = supplierService.querySupplier(new SupplierDto());
-		request.setAttribute("goodsPager", goodsPager);
+		request.setAttribute("goodsPage", goodsPage);
 		request.setAttribute("queryParam", goodsDto);
 		request.setAttribute("supplierList", supplierList);
 		request.getRequestDispatcher("/WEB-INF/jsp/goods/goods.jsp").forward(request, response);

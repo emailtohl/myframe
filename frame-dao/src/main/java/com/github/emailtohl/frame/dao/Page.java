@@ -10,7 +10,7 @@ import java.util.List;
  * @version 1.0
  *************************************************
  */
-public class Pager<T> {
+public class Page<T> {
 	private Long totalRow;// 总行数
 	private Long totalPage;// 总页面数
 	private Long pageNum;// 当前页码

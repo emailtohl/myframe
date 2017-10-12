@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 
 import com.github.emailtohl.frame.cdi.Component;
 import com.github.emailtohl.frame.dao.BaseDao;
-import com.github.emailtohl.frame.dao.Pager;
+import com.github.emailtohl.frame.dao.Page;
 import com.github.emailtohl.frame.dao.myjdbctemplate.BeanAnnotationRowMapper;
 import com.github.emailtohl.frame.dao.myjdbctemplate.RowMapper;
 import com.github.emailtohl.frame.dao.preparedstatementfactory.SqlAndArgs;
@@ -61,7 +61,7 @@ public class GoodsDaoImpl extends BaseDao implements GoodsDao {
 //	private SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
 	
 	@Override
-	public Pager<GoodsDto> queryPage(GoodsDto goodsDto) {
+	public Page<GoodsDto> queryPage(GoodsDto goodsDto) {
 		// 第一步，获取条件语句（WHERE 1=1 ...）以及对应的参数
 		SqlAndArgs sa = sqlBuilder.getSelectCondition(goodsDto);
 		// 第二步，获取时间范围的语句和参数

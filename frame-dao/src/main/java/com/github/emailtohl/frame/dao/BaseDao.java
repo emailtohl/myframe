@@ -153,7 +153,7 @@ public class BaseDao {
 	}
 
 	/**
-	 * 本方法返回一个Pager对象，包含查询结果，最大行数，当前页码等信息
+	 * 本方法返回一个Page对象，包含查询结果，最大行数，当前页码等信息
 	 * 注意：本方法的分页查询语句是基于MySQL和Postgresql的，对于Oracle或SQLServer等数据库不适合
 	 * 
 	 * @param selectSql
@@ -168,12 +168,12 @@ public class BaseDao {
 	 *            每页最多行
 	 * @param <T>
 	 *            po的类型
-	 * @return 封装到Pager中的查询结果，包括结果list，最大页数，当前页数等信息
+	 * @return 封装到Page中的查询结果，包括结果list，最大页数，当前页数等信息
 	 */
-	public <T> Pager<T> pageForMySqlOrPostgresql(String selectSql, Object[] args, RowMapper<T> rowMapper,
+	public <T> Page<T> pageForMySqlOrPostgresql(String selectSql, Object[] args, RowMapper<T> rowMapper,
 			Long pageNum, Integer pageSize) {
 		if (selectSql == null || args == null) {
-			Pager<T> p = new Pager<T>();
+			Page<T> p = new Page<T>();
 			p.setDataList(new ArrayList<T>());
 			return p;
 		}
@@ -194,14 +194,14 @@ public class BaseDao {
 		}
 		// 再查询结果
 		List<T> dataList = simpleJdbcTemplate.query(selectSql + pageSql, args, rowMapper);
-		Pager<T> pager = new Pager<T>();
-		pager.setDataList(dataList);
-		pager.setPageNum(pageNum);
-		pager.setOffset(offset);
-		pager.setPageSize(pageSize);
-		pager.setTotalRow(totalRowNum);
-		pager.setTotalPage(totalPageNum);
-		return pager;
+		Page<T> page = new Page<T>();
+		page.setDataList(dataList);
+		page.setPageNum(pageNum);
+		page.setOffset(offset);
+		page.setPageSize(pageSize);
+		page.setTotalRow(totalRowNum);
+		page.setTotalPage(totalPageNum);
+		return page;
 	}
 
 	/**

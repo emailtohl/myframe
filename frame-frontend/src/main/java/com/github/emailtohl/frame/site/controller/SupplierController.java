@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.emailtohl.frame.dao.Pager;
+import com.github.emailtohl.frame.dao.Page;
 import com.github.emailtohl.frame.mvc.DispatcherServlet.JspUrl;
 import com.github.emailtohl.frame.mvc.Mvc;
 import com.github.emailtohl.frame.site.dto.SupplierDto;
@@ -28,10 +28,10 @@ public class SupplierController {
 
 	@Mvc(action = "page", method = GET)
 	public JspUrl get(HttpServletRequest request, SupplierDto supplierDto) {
-		Pager<SupplierDto> supplierPager = supplierService.queryPage(supplierDto);
-		request.setAttribute("supplierPager", supplierPager);
+		Page<SupplierDto> supplierPage = supplierService.queryPage(supplierDto);
+		request.setAttribute("supplierPage", supplierPage);
 		request.setAttribute("queryParam", supplierDto);
-		request.getSession().setAttribute("supplierList", supplierPager.getDataList());
+		request.getSession().setAttribute("supplierList", supplierPage.getDataList());
 		return new JspUrl("supplier/supplier.jsp");
 	}
 	

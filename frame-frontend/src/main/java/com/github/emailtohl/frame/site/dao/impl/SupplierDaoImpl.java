@@ -8,7 +8,7 @@ import javax.sql.DataSource;
 
 import com.github.emailtohl.frame.cdi.Component;
 import com.github.emailtohl.frame.dao.BaseDao;
-import com.github.emailtohl.frame.dao.Pager;
+import com.github.emailtohl.frame.dao.Page;
 import com.github.emailtohl.frame.dao.myjdbctemplate.BeanAnnotationRowMapper;
 import com.github.emailtohl.frame.dao.myjdbctemplate.RowMapper;
 import com.github.emailtohl.frame.dao.preparedstatementfactory.SqlAndArgs;
@@ -49,7 +49,7 @@ public class SupplierDaoImpl extends BaseDao implements SupplierDao {
 	}
 
 	@Override
-	public Pager<SupplierDto> queryPage(SupplierDto supplierDto) {
+	public Page<SupplierDto> queryPage(SupplierDto supplierDto) {
 		SqlAndArgs sa = sqlBuilder.getSimpleQueryStatement(supplierDto);
 		RowMapper<SupplierDto> rowMapper = new BeanAnnotationRowMapper<SupplierDto>(SupplierDto.class);
 		return pageForMySqlOrPostgresql(sa.getPreparedSQL(), sa.getParamValues(), rowMapper,

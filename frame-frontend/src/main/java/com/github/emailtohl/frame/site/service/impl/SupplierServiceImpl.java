@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import com.github.emailtohl.frame.cdi.Component;
-import com.github.emailtohl.frame.dao.Pager;
+import com.github.emailtohl.frame.dao.Page;
 import com.github.emailtohl.frame.site.dao.SupplierDao;
 import com.github.emailtohl.frame.site.dto.SupplierDto;
 import com.github.emailtohl.frame.site.filter.AuthenticationFilter;
@@ -41,7 +41,7 @@ public class SupplierServiceImpl implements SupplierService {
 	}
 	
 	@Override
-	public Pager<SupplierDto> queryPage(SupplierDto supplierDto) {
+	public Page<SupplierDto> queryPage(SupplierDto supplierDto) {
 		return supplierDao.queryPage(supplierDto);
 	}
 

@@ -2,14 +2,14 @@ package com.github.emailtohl.frame.site.dao;
 
 import java.util.List;
 
-import com.github.emailtohl.frame.dao.Pager;
+import com.github.emailtohl.frame.dao.Page;
 import com.github.emailtohl.frame.site.dao.po.SupplierPo;
 import com.github.emailtohl.frame.site.dto.SupplierDto;
 
 public interface SupplierDao {
 	List<SupplierDto> querySupplier(SupplierDto supplierDto);
 
-	Pager<SupplierDto> queryPage(SupplierDto supplierDto);
+	Page<SupplierDto> queryPage(SupplierDto supplierDto);
 
 	long addSupplier(SupplierDto supplierDto);
 
